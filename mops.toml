@@ -1,0 +1,10 @@
+[package]
+name = "radix-sort"
+version = "1.0.0"
+description = "Radix sort"
+repository = ""
+keywords = [ ]
+license = "MIT"
+
+[dependencies]
+core = "1.0.0"
