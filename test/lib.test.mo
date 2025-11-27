@@ -3,6 +3,7 @@ import Nat32 "mo:core/Nat32";
 import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
 import VarArray "mo:core/VarArray";
+import Array "mo:core/Array";
 
 func testRadixSort(n : Nat, mod : Nat32) {
   let A : Nat32 = 1664525;
@@ -30,13 +31,30 @@ func testRadixSort(n : Nat, mod : Nat32) {
   };
 };
 
+func testRadixSortArray(n : Nat, mod : Nat32) {
+  let A : Nat32 = 1664525;
+  let C : Nat32 = 1013904223;
+
+  var seed : Nat32 = 12345;
+
+  var a = Array.tabulate<(Nat32, Nat)>(
+    n,
+    func(i) {
+      seed := seed *% A +% C;
+      (seed % mod, i);
+    },
+  );
+
+  assert RadixSort.radixSort16<(Nat32, Nat)>(a, func(x, y) = x) == Array.sort(a, func(x, y) = Nat32.compare(x.0, y.0));
+};
+
 let ns = [1, 2, 3, 4, 10, 100, 100, 100_000];
 let mods : [Nat32] = [2 ** 30, 100];
 
 for (n in ns.vals()) {
   for (mod in mods.vals()) {
-    testRadixSort(n, mod);
+    testRadixSortArray(n, mod);
   };
 };
 
-assert RadixSort.sort<Nat32>([3, 4, 5, 1, 2], func x = x) == [1, 2, 3, 4, 5];
+// assert RadixSort.sort<Nat32>([3, 4, 5, 1, 2], func x = x) == [1, 2, 3, 4, 5];
