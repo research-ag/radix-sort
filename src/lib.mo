@@ -87,26 +87,27 @@ module {
       };
     };
 
+    let RR = Nat32.fromNat(RADIX);
+
     // perform radix steps
     for (step in Nat.range(0, 2)) {
       if (step == 1) {
-        var i = 0;
-        while (i < RADIX) {
-          counts[i] := 0;
-          i += 1;
+        var i = RR;
+        while (i > 0) {
+          i -%= 1;
+          counts[Nat32.toNat(i)] := 0;
         };
       };
 
       let digits = allDigits[step];
-      var i : Nat32 = 0;
-      while (i < nn) {
+      var i : Nat32 = nn;
+      while (i > 0) {
+        i -%= 1;
         counts[digits[Nat32.toNat(i)]] +%= 1;
-        i +%= 1;
       };
 
       var sum : Nat32 = 0;
       i := 0;
-      let RR = Nat32.fromNat(RADIX);
       while (i < RR) {
         let ii = Nat32.toNat(i);
         let temp = counts[ii];

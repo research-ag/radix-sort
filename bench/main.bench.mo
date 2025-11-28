@@ -5,6 +5,7 @@ import Nat "mo:core/Nat";
 import Nat64 "mo:core/Nat64";
 import Nat32 "mo:core/Nat32";
 import Text "mo:core/Text";
+import VarArray "mo:core/VarArray";
 import Prim "mo:prim";
 import Sort "../src";
 
@@ -16,13 +17,15 @@ module {
     bench.description("Nat64 bit operations.");
 
     let rows = [
-      "sort",
-      "radixSort16",
+      "Sort.sort",
+      "Sort.radixSort16",
     ];
     let cols = [
       "1000",
       "10000",
+      "16000",
       "100000",
+      "1000000",
     ];
 
     bench.rows(rows);
@@ -31,9 +34,9 @@ module {
     let rng : Random.Random = Random.seed(0x5f5f5f5f5f5f5f5f);
 
     let sourceArrays : [[Nat32]] = Array.tabulate(
-      3,
+      5,
       func(j) = Array.tabulate<Nat32>(
-        [1000, 10000, 100000][j],
+        [1000, 10000, 16000, 100000, 1000000][j],
         func(i) = Nat32.fromIntWrap(Nat64.toNat(rng.nat64() % 1000000)),
       ),
     );
