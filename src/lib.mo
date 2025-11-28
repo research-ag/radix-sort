@@ -106,33 +106,35 @@ module {
         counts[digits[Nat32.toNat(i)]] +%= 1;
       };
 
-      var sum : Nat32 = 0;
       i := 0;
+//      let max = RR - 1;
+      var sum : Nat32 = 0;
       while (i < RR) {
         let ii = Nat32.toNat(i);
-        let temp = counts[ii];
+        sum +%= counts[ii];
         counts[ii] := sum;
-        sum += temp;
         i +%= 1;
       };
 
-      i := 0;
+      i := nn;
 
       if (step == 0) {
-        while (i < nn) {
+        while (i > 0) {
+          i -%= 1;
           let ii = Nat32.toNat(i);
           let digit = digits[ii];
-          output[Nat32.toNat(counts[digit])] := ii;
-          counts[digit] +%= 1;
-          i +%= 1;
+          let t = counts[digit] -% 1;
+          output[Nat32.toNat(t)] := ii;
+          counts[digit] := t;
         };
       } else {
-        while (i < nn) {
+        while (i > 0) {
+          i -%= 1;
           let index = indices[Nat32.toNat(i)];
           let digit = digits[index];
-          output[Nat32.toNat(counts[digit])] := index;
-          counts[digit] +%= 1;
-          i +%= 1;
+          let t = counts[digit] -% 1;
+          output[Nat32.toNat(t)] := index;
+          counts[digit] := t;
         };
       };
 
