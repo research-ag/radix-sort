@@ -1,7 +1,7 @@
 import VarArray "mo:core/VarArray";
 import Nat32 "mo:core/Nat32";
-import Nat "mo:core/Nat";
 import Nat64 "mo:core/Nat64";
+import { min } "mo:core/Nat";
 import Array "mo:core/Array";
 
 module {
@@ -16,8 +16,8 @@ module {
       var leftStart = 0;
 
       while (leftStart < n) {
-        let mid = Nat.min(leftStart + currSize, n);
-        let rightEnd = Nat.min(leftStart + 2 * currSize, n);
+        let mid = min(leftStart + currSize, n);
+        let rightEnd = min(leftStart + 2 * currSize, n);
 
         var left = leftStart;
         var right = mid;
@@ -62,7 +62,8 @@ module {
   public func radixSort16<T>(array : [T], key : T -> Nat32) : [T] {
     let RADIX_BITS = 16;
     let RADIX = 2 ** RADIX_BITS;
-    let MASK = Nat32.fromNat(RADIX - 1);
+    let RR = Nat32.fromNat(RADIX);
+    let MASK = RR -% 1;
 
     let n = array.size();
     let nn = Nat32.fromNat(n);
@@ -87,10 +88,8 @@ module {
       };
     };
 
-    let RR = Nat32.fromNat(RADIX);
-
     // perform radix steps
-    for (step in Nat.range(0, 2)) {
+    for (step in [0,1].vals()) {
       if (step == 1) {
         var i = RR;
         while (i > 0) {
