@@ -66,9 +66,7 @@ module {
     let MASK = RR -% 1;
 
     let n = array.size();
-    let nn = Nat32.fromNat(n);
 
-    let digits = VarArray.repeat<Nat>(0, n);
     var indices = VarArray.tabulate<Nat>(n, func i = i);
     var output = VarArray.repeat<Nat>(0, n);
     let counts = VarArray.repeat<Nat32>(0, 2 ** 16);
@@ -77,64 +75,46 @@ module {
     for (step in [0, 1].vals()) {
       // reset counts
       if (step == 1) {
-        var i = RR;
-        while (i > 0) {
-          i -%= 1;
-          counts[Nat32.toNat(i)] := 0;
-        };
+        for (i in counts.keys()) counts[i] := 0;
       };
 
       // read in the digits and count
       if (step == 0) {
         // read low
-        var ii : Nat32 = nn;
-        while (ii > 0) {
-          ii -%= 1;
-          let i = Nat32.toNat(ii);
-          let digit = Nat32.toNat(key(array[i]) & MASK);
-          digits[i] := digit; 
+        for (x in array.vals()) {
+          let digit = Nat32.toNat(key(x) & MASK);
           counts[digit] +%= 1;
         };
       } else {
         // read high
-        var ii : Nat32 = nn;
-        while (ii > 0) {
-          ii -%= 1;
-          let i = Nat32.toNat(ii);
-          let digit = Nat32.toNat(key(array[i]) >> 16);
-          digits[i] := digit; 
+        for (x in array.vals()) {
+          let digit = Nat32.toNat(key(x) >> 16);
           counts[digit] +%= 1;
         };
       };
 
-      var i : Nat32 = 0;
+      // convert counts to positions
       var sum : Nat32 = 0;
-      while (i < RR) {
-        let ii = Nat32.toNat(i);
-        sum +%= counts[ii];
-        counts[ii] := sum;
-        i +%= 1;
+      for (i in counts.keys()) {
+        let t = counts[i];
+        counts[i] := sum;
+        sum +%= t;
       };
 
-      i := nn;
-
+      // move between input and output
       if (step == 0) {
-        while (i > 0) {
-          i -%= 1;
-          let ii = Nat32.toNat(i);
-          let digit = digits[ii];
-          let t = counts[digit] -% 1;
-          output[Nat32.toNat(t)] := ii;
-          counts[digit] := t;
+        for (i in array.keys()) {
+          let digit = Nat32.toNat(key(array[i]) & MASK);
+          let pos = counts[digit];
+          output[Nat32.toNat(pos)] := i;
+          counts[digit] := pos +% 1;
         };
       } else {
-        while (i > 0) {
-          i -%= 1;
-          let index = indices[Nat32.toNat(i)];
-          let digit = digits[index];
-          let t = counts[digit] -% 1;
-          output[Nat32.toNat(t)] := index;
-          counts[digit] := t;
+        for (index in indices.vals()) {
+          let digit = Nat32.toNat(key(array[index]) >> 16);
+          let pos = counts[digit];
+          output[Nat32.toNat(pos)] := index;
+          counts[digit] := pos +% 1;
         };
       };
 
