@@ -3,6 +3,7 @@ import Nat32 "mo:core/Nat32";
 import Nat64 "mo:core/Nat64";
 import { min } "mo:core/Nat";
 import Array "mo:core/Array";
+import Debug "mo:base/Debug";
 
 module {
   func mergeSortInternal(array : [var Nat64]) : [var Nat64] {
@@ -57,6 +58,99 @@ module {
     };
 
     a;
+  };
+
+  func mergeSort<T>(array : [var T], scratch : [var T], key : T -> Nat32, from : Nat32, to : Nat32, n : Nat32) {
+    let original = scratch;
+    let output = array;
+
+    var currSize : Nat32 = 1;
+
+    while (currSize < n) {
+      var leftStart : Nat32 = from;
+
+      while (leftStart < to) {
+        let mid = Nat32.min(leftStart + currSize, to);
+        let rightEnd = Nat32.min(leftStart + 2 * currSize, to);
+
+        var left = leftStart;
+        var right = mid;
+        var nextSorted = leftStart;
+        while (left < mid and right < rightEnd) {
+          let leftElement = original[Nat32.toNat(left)];
+          let rightElement = original[Nat32.toNat(right)];
+          output[Nat32.toNat(nextSorted)] := if (key(leftElement) <= key(rightElement)) {
+            left += 1;
+            leftElement;
+          } else {
+            right += 1;
+            rightElement;
+          };
+
+          nextSorted += 1;
+        };
+        while (left < mid) {
+          output[Nat32.toNat(nextSorted)] := original[Nat32.toNat(left)];
+          nextSorted +%= 1;
+          left +%= 1;
+        };
+        while (right < rightEnd) {
+          output[Nat32.toNat(nextSorted)] := original[Nat32.toNat(right)];
+          nextSorted +%= 1;
+          right +%= 1;
+        };
+
+        leftStart += 2 * currSize;
+      };
+
+      currSize *= 2;
+
+      for (i in Nat32.range(from, to)) {
+        let ii = Nat32.toNat(i);
+        original[ii] := output[ii];
+      };
+    };
+  };
+
+  public func bucketSort<T>(array : [var T], key : T -> Nat32) {
+    let n = array.size();
+
+    if (n <= 1) return;
+
+    let lz = Nat32.bitcountLeadingZero(Nat32.fromNat(n));
+    let RADIX = Nat32.toNat(1 << (31 - lz));
+    let SHIFT = lz + 1;
+
+    let counts = VarArray.repeat<Nat32>(0, RADIX);
+
+    for (x in array.vals()) counts[Nat32.toNat(key(x) >> SHIFT)] +%= 1;
+
+    var sum : Nat32 = 0;
+    for (i in counts.keys()) {
+      let t = counts[i];
+      counts[i] := sum;
+      sum +%= t;
+    };
+
+    let scratch = VarArray.repeat(array[0], n);
+
+    for (x in array.vals()) {
+      let digit = Nat32.toNat(key(x) >> SHIFT);
+      let pos = counts[digit];
+      scratch[Nat32.toNat(pos)] := x;
+      counts[digit] := pos +% 1;
+    };
+
+    assert counts[RADIX - 1] == Nat32.fromNat(n);
+
+    var prev : Nat32 = 0;
+    for (count in counts.vals()) {
+      let length = count -% prev;
+      mergeSort(array, scratch, key, prev, count, length);
+      prev := count;
+    };
+
+    for (i in array.keys()) array[i] := scratch[i];
   };
 
   public func radixSort16<T>(array : [T], key : T -> Nat32) : [T] {
@@ -134,8 +228,8 @@ module {
 
     let scratch = VarArray.repeat<T>(array[0], n);
 
-//    let indices = VarArray.repeat<Nat>(0, n);
-//    let output = VarArray.repeat<Nat>(0, n);
+    //    let indices = VarArray.repeat<Nat>(0, n);
+    //    let output = VarArray.repeat<Nat>(0, n);
     let counts = VarArray.repeat<Nat32>(0, RADIX);
 
     // perform radix steps
