@@ -3,7 +3,6 @@ import Nat32 "mo:core/Nat32";
 import Nat64 "mo:core/Nat64";
 import { min } "mo:core/Nat";
 import Array "mo:core/Array";
-import Debug "mo:base/Debug";
 
 module {
   func mergeSortInternal(array : [var Nat64]) : [var Nat64] {
@@ -208,7 +207,6 @@ module {
     let SHIFT = lz + 1;
 
     let counts = VarArray.repeat<Nat32>(0, RADIX);
-
     for (x in array.vals()) counts[Nat32.toNat(key(x) >> SHIFT)] +%= 1;
 
     var sum : Nat32 = 0;
@@ -219,7 +217,6 @@ module {
     };
 
     let scratch = VarArray.repeat(array[0], n);
-
     for (x in array.vals()) {
       let digit = Nat32.toNat(key(x) >> SHIFT);
       let pos = counts[digit];
@@ -227,12 +224,9 @@ module {
       counts[digit] := pos +% 1;
     };
 
-    assert counts[RADIX - 1] == Nat32.fromNat(n);
-
     var prev : Nat32 = 0;
     for (count in counts.vals()) {
-      let length = count -% prev;
-      if (length >= 2) sort(scratch, array, key, prev, count);
+      if (count -% prev >= 2) sort(scratch, array, key, prev, count);
       prev := count;
     };
 
