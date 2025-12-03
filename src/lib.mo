@@ -3,7 +3,7 @@ import Nat32 "mo:core/Nat32";
 import Nat64 "mo:core/Nat64";
 import { min } "mo:core/Nat";
 import Array "mo:core/Array";
-import Runtime "mo:core/Runtime";
+import Nat "mo:core/Nat";
 
 module {
   func mergeSortInternal(array : [var Nat64]) : [var Nat64] {
@@ -62,10 +62,7 @@ module {
 
   func sort<T>(array : [var T], scratch : [var T], key : T -> Nat32, from : Nat32, to : Nat32) {
     let n = to -% from;
-    if (n <= 8) {
-      sortSmallUnstable(array, from, n, key);
-      return;
-    };
+    if (n <= 1) return;
 
     let mid = from +% (n >> 1);
 
@@ -106,710 +103,745 @@ module {
     };
   };
 
-  public func sortSmallUnstable<T>(arr : [var T], from32 : Nat32, len : Nat32, key : T -> Nat32) {
-    let from = Nat32.toNat(from32);
-    switch (len) {
-      case (2) {
-        var v0 = arr[from];
-        var v1 = arr[from + 1];
-
-        if (key(v0) > key(v1)) { let t = v0; v0 := v1; v1 := t };
-
-        arr[from] := v0;
-        arr[from + 1] := v1;
-      };
-      case (3) {
-        var t0 = arr[from];
-        var k0 = key(t0) << 2;
-        var t1 = arr[from + 1];
-        var k1 = (key(t1) << 2) ^ 1;
-        var t2 = arr[from + 2];
-        var k2 = (key(t2) << 2) ^ 2;
-
-        if (k0 > k1) {
-          let v = t0;
-          t0 := t1;
-          t1 := v;
-          let k = k0;
-          k0 := k1;
-          k1 := k;
-        };
-        if (k1 > k2) {
-          let v = t1;
-          t1 := t2;
-          t2 := v;
-          let k = k1;
-          k1 := k2;
-          k2 := k;
-        };
-        if (k0 > k1) {
-          let v = t0;
-          t0 := t1;
-          t1 := v;
-          let k = k0;
-          k0 := k1;
-          k1 := k;
-        };
-
-        arr[from] := t0;
-        arr[from + 1] := t1;
-        arr[from + 2] := t2;
-      };
-      case (4) {
-        var t0 = arr[from];
-        var k0 = key(t0) << 2;
-        var t1 = arr[from + 1];
-        var k1 = (key(t1) << 2) ^ 1;
-        var t2 = arr[from + 2];
-        var k2 = (key(t2) << 2) ^ 2;
-        var t3 = arr[from + 3];
-        var k3 = (key(t3) << 2) ^ 3;
-
-        if (k0 > k1) {
-          let v = t0;
-          t0 := t1;
-          t1 := v;
-          let k = k0;
-          k0 := k1;
-          k1 := k;
-        };
-        if (k2 > k3) {
-          let v = t2;
-          t2 := t3;
-          t3 := v;
-          let k = k2;
-          k2 := k3;
-          k3 := k;
-        };
-        if (k0 > k2) {
-          let v = t0;
-          t0 := t2;
-          t2 := v;
-          let k = k0;
-          k0 := k2;
-          k2 := k;
-        };
-        if (k1 > k3) {
-          let v = t1;
-          t1 := t3;
-          t3 := v;
-          let k = k1;
-          k1 := k3;
-          k3 := k;
-        };
-        if (k1 > k2) {
-          let v = t1;
-          t1 := t2;
-          t2 := v;
-          let k = k1;
-          k1 := k2;
-          k2 := k;
-        };
-
-        arr[from] := t0;
-        arr[from + 1] := t1;
-        arr[from + 2] := t2;
-        arr[from + 3] := t3;
-      };
-      case (5) {
-        var t0 = arr[from];
-        var k0 = key(t0) << 3;
-        var t1 = arr[from + 1];
-        var k1 = (key(t1) << 3) ^ 1;
-        var t2 = arr[from + 2];
-        var k2 = (key(t2) << 3) ^ 2;
-        var t3 = arr[from + 3];
-        var k3 = (key(t3) << 3) ^ 3;
-        var t4 = arr[from + 4];
-        var k4 = (key(t4) << 3) ^ 4;
-
-        if (k0 > k1) {
-          let v = t0;
-          t0 := t1;
-          t1 := v;
-          let k = k0;
-          k0 := k1;
-          k1 := k;
-        };
-        if (k3 > k4) {
-          let v = t3;
-          t3 := t4;
-          t4 := v;
-          let k = k3;
-          k3 := k4;
-          k4 := k;
-        };
-        if (k2 > k4) {
-          let v = t2;
-          t2 := t4;
-          t4 := v;
-          let k = k2;
-          k2 := k4;
-          k4 := k;
-        };
-        if (k2 > k3) {
-          let v = t2;
-          t2 := t3;
-          t3 := v;
-          let k = k2;
-          k2 := k3;
-          k3 := k;
-        };
-        if (k0 > k3) {
-          let v = t0;
-          t0 := t3;
-          t3 := v;
-          let k = k0;
-          k0 := k3;
-          k3 := k;
-        };
-        if (k0 > k2) {
-          let v = t0;
-          t0 := t2;
-          t2 := v;
-          let k = k0;
-          k0 := k2;
-          k2 := k;
-        };
-        if (k1 > k4) {
-          let v = t1;
-          t1 := t4;
-          t4 := v;
-          let k = k1;
-          k1 := k4;
-          k4 := k;
-        };
-        if (k1 > k3) {
-          let v = t1;
-          t1 := t3;
-          t3 := v;
-          let k = k1;
-          k1 := k3;
-          k3 := k;
-        };
-        if (k1 > k2) {
-          let v = t1;
-          t1 := t2;
-          t2 := v;
-          let k = k1;
-          k1 := k2;
-          k2 := k;
-        };
-
-        arr[from] := t0;
-        arr[from + 1] := t1;
-        arr[from + 2] := t2;
-        arr[from + 3] := t3;
-        arr[from + 4] := t4;
-      };
-      case (6) {
-        var t0 = arr[from];
-        var k0 = key(t0) << 3;
-        var t1 = arr[from + 1];
-        var k1 = (key(t1) << 3) ^ 1;
-        var t2 = arr[from + 2];
-        var k2 = (key(t2) << 3) ^ 2;
-        var t3 = arr[from + 3];
-        var k3 = (key(t3) << 3) ^ 3;
-        var t4 = arr[from + 4];
-        var k4 = (key(t4) << 3) ^ 4;
-        var t5 = arr[from + 5];
-        var k5 = (key(t5) << 3) ^ 5;
-
-        if (k0 > k1) {
-          let v = t0;
-          t0 := t1;
-          t1 := v;
-          let k = k0;
-          k0 := k1;
-          k1 := k;
-        };
-        if (k2 > k3) {
-          let v = t2;
-          t2 := t3;
-          t3 := v;
-          let k = k2;
-          k2 := k3;
-          k3 := k;
-        };
-        if (k4 > k5) {
-          let v = t4;
-          t4 := t5;
-          t5 := v;
-          let k = k4;
-          k4 := k5;
-          k5 := k;
-        };
-        if (k0 > k2) {
-          let v = t0;
-          t0 := t2;
-          t2 := v;
-          let k = k0;
-          k0 := k2;
-          k2 := k;
-        };
-        if (k3 > k5) {
-          let v = t3;
-          t3 := t5;
-          t5 := v;
-          let k = k3;
-          k3 := k5;
-          k5 := k;
-        };
-        if (k1 > k4) {
-          let v = t1;
-          t1 := t4;
-          t4 := v;
-          let k = k1;
-          k1 := k4;
-          k4 := k;
-        };
-        if (k0 > k1) {
-          let v = t0;
-          t0 := t1;
-          t1 := v;
-          let k = k0;
-          k0 := k1;
-          k1 := k;
-        };
-        if (k2 > k3) {
-          let v = t2;
-          t2 := t3;
-          t3 := v;
-          let k = k2;
-          k2 := k3;
-          k3 := k;
-        };
-        if (k4 > k5) {
-          let v = t4;
-          t4 := t5;
-          t5 := v;
-          let k = k4;
-          k4 := k5;
-          k5 := k;
-        };
-        if (k1 > k2) {
-          let v = t1;
-          t1 := t2;
-          t2 := v;
-          let k = k1;
-          k1 := k2;
-          k2 := k;
-        };
-        if (k3 > k4) {
-          let v = t3;
-          t3 := t4;
-          t4 := v;
-          let k = k3;
-          k3 := k4;
-          k4 := k;
-        };
-        if (k2 > k3) {
-          let v = t2;
-          t2 := t3;
-          t3 := v;
-          let k = k2;
-          k2 := k3;
-          k3 := k;
-        };
-
-        arr[from] := t0;
-        arr[from + 1] := t1;
-        arr[from + 2] := t2;
-        arr[from + 3] := t3;
-        arr[from + 4] := t4;
-        arr[from + 5] := t5;
-      };
-      case (7) {
-        var t0 = arr[from];
-        var k0 = key(t0) << 3;
-        var t1 = arr[from + 1];
-        var k1 = (key(t1) << 3) ^ 1;
-        var t2 = arr[from + 2];
-        var k2 = (key(t2) << 3) ^ 2;
-        var t3 = arr[from + 3];
-        var k3 = (key(t3) << 3) ^ 3;
-        var t4 = arr[from + 4];
-        var k4 = (key(t4) << 3) ^ 4;
-        var t5 = arr[from + 5];
-        var k5 = (key(t5) << 3) ^ 5;
-        var t6 = arr[from + 6];
-        var k6 = (key(t6) << 3) ^ 6;
-
-        if (k0 > k1) {
-          let v = t0;
-          t0 := t1;
-          t1 := v;
-          let k = k0;
-          k0 := k1;
-          k1 := k;
-        };
-        if (k2 > k3) {
-          let v = t2;
-          t2 := t3;
-          t3 := v;
-          let k = k2;
-          k2 := k3;
-          k3 := k;
-        };
-        if (k0 > k2) {
-          let v = t0;
-          t0 := t2;
-          t2 := v;
-          let k = k0;
-          k0 := k2;
-          k2 := k;
-        };
-        if (k1 > k3) {
-          let v = t1;
-          t1 := t3;
-          t3 := v;
-          let k = k1;
-          k1 := k3;
-          k3 := k;
-        };
-        if (k1 > k2) {
-          let v = t1;
-          t1 := t2;
-          t2 := v;
-          let k = k1;
-          k1 := k2;
-          k2 := k;
-        };
-        if (k4 > k5) {
-          let v = t4;
-          t4 := t5;
-          t5 := v;
-          let k = k4;
-          k4 := k5;
-          k5 := k;
-        };
-        if (k4 > k6) {
-          let v = t4;
-          t4 := t6;
-          t6 := v;
-          let k = k4;
-          k4 := k6;
-          k6 := k;
-        };
-        if (k5 > k6) {
-          let v = t5;
-          t5 := t6;
-          t6 := v;
-          let k = k5;
-          k5 := k6;
-          k6 := k;
-        };
-        if (k0 > k4) {
-          let v = t0;
-          t0 := t4;
-          t4 := v;
-          let k = k0;
-          k0 := k4;
-          k4 := k;
-        };
-        if (k1 > k5) {
-          let v = t1;
-          t1 := t5;
-          t5 := v;
-          let k = k1;
-          k1 := k5;
-          k5 := k;
-        };
-        if (k2 > k6) {
-          let v = t2;
-          t2 := t6;
-          t6 := v;
-          let k = k2;
-          k2 := k6;
-          k6 := k;
-        };
-        if (k2 > k4) {
-          let v = t2;
-          t2 := t4;
-          t4 := v;
-          let k = k2;
-          k2 := k4;
-          k4 := k;
-        };
-        if (k3 > k5) {
-          let v = t3;
-          t3 := t5;
-          t5 := v;
-          let k = k3;
-          k3 := k5;
-          k5 := k;
-        };
-        if (k1 > k2) {
-          let v = t1;
-          t1 := t2;
-          t2 := v;
-          let k = k1;
-          k1 := k2;
-          k2 := k;
-        };
-        if (k3 > k4) {
-          let v = t3;
-          t3 := t4;
-          t4 := v;
-          let k = k3;
-          k3 := k4;
-          k4 := k;
-        };
-        if (k5 > k6) {
-          let v = t5;
-          t5 := t6;
-          t6 := v;
-          let k = k5;
-          k5 := k6;
-          k6 := k;
-        };
-
-        arr[from] := t0;
-        arr[from + 1] := t1;
-        arr[from + 2] := t2;
-        arr[from + 3] := t3;
-        arr[from + 4] := t4;
-        arr[from + 5] := t5;
-        arr[from + 6] := t6;
-      };
-      case (8) {
-        var t0 = arr[from];
-        var k0 = key(t0) << 3;
-        var t1 = arr[from + 1];
-        var k1 = (key(t1) << 3) ^ 1;
-        var t2 = arr[from + 2];
-        var k2 = (key(t2) << 3) ^ 2;
-        var t3 = arr[from + 3];
-        var k3 = (key(t3) << 3) ^ 3;
-        var t4 = arr[from + 4];
-        var k4 = (key(t4) << 3) ^ 4;
-        var t5 = arr[from + 5];
-        var k5 = (key(t5) << 3) ^ 5;
-        var t6 = arr[from + 6];
-        var k6 = (key(t6) << 3) ^ 6;
-        var t7 = arr[from + 7];
-        var k7 = (key(t7) << 3) ^ 7;
-
-        if (k0 > k1) {
-          let v = t0;
-          t0 := t1;
-          t1 := v;
-          let k = k0;
-          k0 := k1;
-          k1 := k;
-        };
-        if (k2 > k3) {
-          let v = t2;
-          t2 := t3;
-          t3 := v;
-          let k = k2;
-          k2 := k3;
-          k3 := k;
-        };
-        if (k4 > k5) {
-          let v = t4;
-          t4 := t5;
-          t5 := v;
-          let k = k4;
-          k4 := k5;
-          k5 := k;
-        };
-        if (k6 > k7) {
-          let v = t6;
-          t6 := t7;
-          t7 := v;
-          let k = k6;
-          k6 := k7;
-          k7 := k;
-        };
-        if (k0 > k2) {
-          let v = t0;
-          t0 := t2;
-          t2 := v;
-          let k = k0;
-          k0 := k2;
-          k2 := k;
-        };
-        if (k1 > k3) {
-          let v = t1;
-          t1 := t3;
-          t3 := v;
-          let k = k1;
-          k1 := k3;
-          k3 := k;
-        };
-        if (k4 > k6) {
-          let v = t4;
-          t4 := t6;
-          t6 := v;
-          let k = k4;
-          k4 := k6;
-          k6 := k;
-        };
-        if (k5 > k7) {
-          let v = t5;
-          t5 := t7;
-          t7 := v;
-          let k = k5;
-          k5 := k7;
-          k7 := k;
-        };
-        if (k1 > k2) {
-          let v = t1;
-          t1 := t2;
-          t2 := v;
-          let k = k1;
-          k1 := k2;
-          k2 := k;
-        };
-        if (k5 > k6) {
-          let v = t5;
-          t5 := t6;
-          t6 := v;
-          let k = k5;
-          k5 := k6;
-          k6 := k;
-        };
-        if (k0 > k4) {
-          let v = t0;
-          t0 := t4;
-          t4 := v;
-          let k = k0;
-          k0 := k4;
-          k4 := k;
-        };
-        if (k3 > k7) {
-          let v = t3;
-          t3 := t7;
-          t7 := v;
-          let k = k3;
-          k3 := k7;
-          k7 := k;
-        };
-        if (k1 > k5) {
-          let v = t1;
-          t1 := t5;
-          t5 := v;
-          let k = k1;
-          k1 := k5;
-          k5 := k;
-        };
-        if (k2 > k6) {
-          let v = t2;
-          t2 := t6;
-          t6 := v;
-          let k = k2;
-          k2 := k6;
-          k6 := k;
-        };
-        if (k1 > k4) {
-          let v = t1;
-          t1 := t4;
-          t4 := v;
-          let k = k1;
-          k1 := k4;
-          k4 := k;
-        };
-        if (k3 > k6) {
-          let v = t3;
-          t3 := t6;
-          t6 := v;
-          let k = k3;
-          k3 := k6;
-          k6 := k;
-        };
-        if (k2 > k4) {
-          let v = t2;
-          t2 := t4;
-          t4 := v;
-          let k = k2;
-          k2 := k4;
-          k4 := k;
-        };
-        if (k3 > k5) {
-          let v = t3;
-          t3 := t5;
-          t5 := v;
-          let k = k3;
-          k3 := k5;
-          k5 := k;
-        };
-        if (k1 > k2) {
-          let v = t1;
-          t1 := t2;
-          t2 := v;
-          let k = k1;
-          k1 := k2;
-          k2 := k;
-        };
-        if (k3 > k4) {
-          let v = t3;
-          t3 := t4;
-          t4 := v;
-          let k = k3;
-          k3 := k4;
-          k4 := k;
-        };
-        if (k5 > k6) {
-          let v = t5;
-          t5 := t6;
-          t6 := v;
-          let k = k5;
-          k5 := k6;
-          k6 := k;
-        };
-
-        arr[from] := t0;
-        arr[from + 1] := t1;
-        arr[from + 2] := t2;
-        arr[from + 3] := t3;
-        arr[from + 4] := t4;
-        arr[from + 5] := t5;
-        arr[from + 6] := t6;
-        arr[from + 7] := t7;
-      };
-      case (_) Runtime.trap("Can not happen");
-    };
-  };
-
   public func bucketSort<T>(array : [var T], key : T -> Nat32) {
     let n = array.size();
-
     if (n <= 1) return;
 
-    let lz = Nat32.bitcountLeadingZero(Nat32.fromNat(n));
-    let RADIX = Nat32.toNat(1 << (31 - lz));
-    let SHIFT = lz + 1;
+    let scratch = VarArray.repeat(array[0], n);
+    if (n < 8) {
+      sort(array, scratch, key, 0 : Nat32, Nat32.fromNat n);
+      return;
+    };
+
+    bucketSortRecursive(array, scratch, key, 0 : Nat32, Nat32.fromNat(n), 0 : Nat32);
+  };
+
+  func bucketSortRecursive<T>(array : [var T], scratch : [var T], key : T -> Nat32, from : Nat32, to : Nat32, bits : Nat32) {
+    let n = to - from;
+
+    let SHIFT = Nat32.bitcountLeadingZero(n) + 1;
+    let BITS_ADD = 32 - SHIFT;
+    let RADIX = Nat32.toNat(1 << BITS_ADD);
 
     let counts = VarArray.repeat<Nat32>(0, RADIX);
-    for (x in array.vals()) counts[Nat32.toNat(key(x) >> SHIFT)] +%= 1;
+    if (bits == 0) {
+      for (x in array.vals()) counts[Nat32.toNat(key(x) >> SHIFT)] +%= 1;
+    } else {
+      for (i in Nat32.range(from, to)) {
+        let x = key(array[Nat32.toNat(i)]);
+        counts[Nat32.toNat((x << bits) >> SHIFT)] +%= 1;
+      };
+    };
 
-    var sum : Nat32 = 0;
+    var sum : Nat32 = from;
     for (i in counts.keys()) {
       let t = counts[i];
       counts[i] := sum;
       sum +%= t;
     };
 
-    let scratch = VarArray.repeat(array[0], n);
-    for (x in array.vals()) {
-      let digit = Nat32.toNat(key(x) >> SHIFT);
-      let pos = counts[digit];
-      scratch[Nat32.toNat(pos)] := x;
-      counts[digit] := pos +% 1;
+    if (bits == 0) {
+      for (x in array.vals()) {
+        let digit = Nat32.toNat(key(x) >> SHIFT);
+        let pos = counts[digit];
+        scratch[Nat32.toNat(pos)] := x;
+        counts[digit] := pos +% 1;
+      };
+    } else {
+      for (i in Nat32.range(from, to)) {
+        let x = array[Nat32.toNat(i)];
+        let digit = Nat32.toNat((key(x) << bits) >> SHIFT);
+        let pos = counts[digit];
+        scratch[Nat32.toNat(pos)] := x;
+        counts[digit] := pos +% 1;
+      };
     };
 
-    var prev : Nat32 = 0;
+    if (bits == 0) {
+      for (i in array.keys()) array[i] := scratch[i];
+    } else {
+      for (i in Nat32.range(from, to)) {
+        let ii = Nat32.toNat(i);
+        array[ii] := scratch[ii];
+      };
+    };
+
+    var prev : Nat32 = from;
     for (count in counts.vals()) {
-      let n = count -% prev;
-      if (n >= 2) {
-        if (n <= 8) sortSmallUnstable(scratch, prev, n, key) else sort(scratch, array, key, prev, count);
+      let len = count -% prev;
+      switch (len) {
+        case (0 or 1) {};
+        case (2) {
+          let from = Nat32.toNat(prev);
+          var v0 = array[from];
+          var v1 = array[from + 1];
+
+          if (key(v0) > key(v1)) {
+            array[from] := v1;
+            array[from + 1] := v0;
+          };
+        };
+        case (3) {
+          let from = Nat32.toNat(prev);
+          var t0 = array[from];
+          var k0 = key(t0) << 2;
+          var t1 = array[from + 1];
+          var k1 = (key(t1) << 2) ^ 1;
+          var t2 = array[from + 2];
+          var k2 = (key(t2) << 2) ^ 2;
+
+          if (k0 > k1) {
+            let v = t0;
+            t0 := t1;
+            t1 := v;
+            let k = k0;
+            k0 := k1;
+            k1 := k;
+          };
+          if (k1 > k2) {
+            let v = t1;
+            t1 := t2;
+            t2 := v;
+            let k = k1;
+            k1 := k2;
+            k2 := k;
+          };
+          if (k0 > k1) {
+            let v = t0;
+            t0 := t1;
+            t1 := v;
+            let k = k0;
+            k0 := k1;
+            k1 := k;
+          };
+
+          array[from] := t0;
+          array[from + 1] := t1;
+          array[from + 2] := t2;
+        };
+        case (4) {
+          let from = Nat32.toNat(prev);
+          var t0 = array[from];
+          var k0 = key(t0) << 2;
+          var t1 = array[from + 1];
+          var k1 = (key(t1) << 2) ^ 1;
+          var t2 = array[from + 2];
+          var k2 = (key(t2) << 2) ^ 2;
+          var t3 = array[from + 3];
+          var k3 = (key(t3) << 2) ^ 3;
+
+          if (k0 > k1) {
+            let v = t0;
+            t0 := t1;
+            t1 := v;
+            let k = k0;
+            k0 := k1;
+            k1 := k;
+          };
+          if (k2 > k3) {
+            let v = t2;
+            t2 := t3;
+            t3 := v;
+            let k = k2;
+            k2 := k3;
+            k3 := k;
+          };
+          if (k0 > k2) {
+            let v = t0;
+            t0 := t2;
+            t2 := v;
+            let k = k0;
+            k0 := k2;
+            k2 := k;
+          };
+          if (k1 > k3) {
+            let v = t1;
+            t1 := t3;
+            t3 := v;
+            let k = k1;
+            k1 := k3;
+            k3 := k;
+          };
+          if (k1 > k2) {
+            let v = t1;
+            t1 := t2;
+            t2 := v;
+            let k = k1;
+            k1 := k2;
+            k2 := k;
+          };
+
+          array[from] := t0;
+          array[from + 1] := t1;
+          array[from + 2] := t2;
+          array[from + 3] := t3;
+        };
+        case (5) {
+          let from = Nat32.toNat(prev);
+          var t0 = array[from];
+          var k0 = key(t0) << 3;
+          var t1 = array[from + 1];
+          var k1 = (key(t1) << 3) ^ 1;
+          var t2 = array[from + 2];
+          var k2 = (key(t2) << 3) ^ 2;
+          var t3 = array[from + 3];
+          var k3 = (key(t3) << 3) ^ 3;
+          var t4 = array[from + 4];
+          var k4 = (key(t4) << 3) ^ 4;
+
+          if (k0 > k1) {
+            let v = t0;
+            t0 := t1;
+            t1 := v;
+            let k = k0;
+            k0 := k1;
+            k1 := k;
+          };
+          if (k3 > k4) {
+            let v = t3;
+            t3 := t4;
+            t4 := v;
+            let k = k3;
+            k3 := k4;
+            k4 := k;
+          };
+          if (k2 > k4) {
+            let v = t2;
+            t2 := t4;
+            t4 := v;
+            let k = k2;
+            k2 := k4;
+            k4 := k;
+          };
+          if (k2 > k3) {
+            let v = t2;
+            t2 := t3;
+            t3 := v;
+            let k = k2;
+            k2 := k3;
+            k3 := k;
+          };
+          if (k0 > k3) {
+            let v = t0;
+            t0 := t3;
+            t3 := v;
+            let k = k0;
+            k0 := k3;
+            k3 := k;
+          };
+          if (k0 > k2) {
+            let v = t0;
+            t0 := t2;
+            t2 := v;
+            let k = k0;
+            k0 := k2;
+            k2 := k;
+          };
+          if (k1 > k4) {
+            let v = t1;
+            t1 := t4;
+            t4 := v;
+            let k = k1;
+            k1 := k4;
+            k4 := k;
+          };
+          if (k1 > k3) {
+            let v = t1;
+            t1 := t3;
+            t3 := v;
+            let k = k1;
+            k1 := k3;
+            k3 := k;
+          };
+          if (k1 > k2) {
+            let v = t1;
+            t1 := t2;
+            t2 := v;
+            let k = k1;
+            k1 := k2;
+            k2 := k;
+          };
+
+          array[from] := t0;
+          array[from + 1] := t1;
+          array[from + 2] := t2;
+          array[from + 3] := t3;
+          array[from + 4] := t4;
+        };
+        case (6) {
+          let from = Nat32.toNat(prev);
+          var t0 = array[from];
+          var k0 = key(t0) << 3;
+          var t1 = array[from + 1];
+          var k1 = (key(t1) << 3) ^ 1;
+          var t2 = array[from + 2];
+          var k2 = (key(t2) << 3) ^ 2;
+          var t3 = array[from + 3];
+          var k3 = (key(t3) << 3) ^ 3;
+          var t4 = array[from + 4];
+          var k4 = (key(t4) << 3) ^ 4;
+          var t5 = array[from + 5];
+          var k5 = (key(t5) << 3) ^ 5;
+
+          if (k0 > k1) {
+            let v = t0;
+            t0 := t1;
+            t1 := v;
+            let k = k0;
+            k0 := k1;
+            k1 := k;
+          };
+          if (k2 > k3) {
+            let v = t2;
+            t2 := t3;
+            t3 := v;
+            let k = k2;
+            k2 := k3;
+            k3 := k;
+          };
+          if (k4 > k5) {
+            let v = t4;
+            t4 := t5;
+            t5 := v;
+            let k = k4;
+            k4 := k5;
+            k5 := k;
+          };
+          if (k0 > k2) {
+            let v = t0;
+            t0 := t2;
+            t2 := v;
+            let k = k0;
+            k0 := k2;
+            k2 := k;
+          };
+          if (k3 > k5) {
+            let v = t3;
+            t3 := t5;
+            t5 := v;
+            let k = k3;
+            k3 := k5;
+            k5 := k;
+          };
+          if (k1 > k4) {
+            let v = t1;
+            t1 := t4;
+            t4 := v;
+            let k = k1;
+            k1 := k4;
+            k4 := k;
+          };
+          if (k0 > k1) {
+            let v = t0;
+            t0 := t1;
+            t1 := v;
+            let k = k0;
+            k0 := k1;
+            k1 := k;
+          };
+          if (k2 > k3) {
+            let v = t2;
+            t2 := t3;
+            t3 := v;
+            let k = k2;
+            k2 := k3;
+            k3 := k;
+          };
+          if (k4 > k5) {
+            let v = t4;
+            t4 := t5;
+            t5 := v;
+            let k = k4;
+            k4 := k5;
+            k5 := k;
+          };
+          if (k1 > k2) {
+            let v = t1;
+            t1 := t2;
+            t2 := v;
+            let k = k1;
+            k1 := k2;
+            k2 := k;
+          };
+          if (k3 > k4) {
+            let v = t3;
+            t3 := t4;
+            t4 := v;
+            let k = k3;
+            k3 := k4;
+            k4 := k;
+          };
+          if (k2 > k3) {
+            let v = t2;
+            t2 := t3;
+            t3 := v;
+            let k = k2;
+            k2 := k3;
+            k3 := k;
+          };
+
+          array[from] := t0;
+          array[from + 1] := t1;
+          array[from + 2] := t2;
+          array[from + 3] := t3;
+          array[from + 4] := t4;
+          array[from + 5] := t5;
+        };
+        case (7) {
+          let from = Nat32.toNat(prev);
+          var t0 = array[from];
+          var k0 = key(t0) << 3;
+          var t1 = array[from + 1];
+          var k1 = (key(t1) << 3) ^ 1;
+          var t2 = array[from + 2];
+          var k2 = (key(t2) << 3) ^ 2;
+          var t3 = array[from + 3];
+          var k3 = (key(t3) << 3) ^ 3;
+          var t4 = array[from + 4];
+          var k4 = (key(t4) << 3) ^ 4;
+          var t5 = array[from + 5];
+          var k5 = (key(t5) << 3) ^ 5;
+          var t6 = array[from + 6];
+          var k6 = (key(t6) << 3) ^ 6;
+
+          if (k0 > k1) {
+            let v = t0;
+            t0 := t1;
+            t1 := v;
+            let k = k0;
+            k0 := k1;
+            k1 := k;
+          };
+          if (k2 > k3) {
+            let v = t2;
+            t2 := t3;
+            t3 := v;
+            let k = k2;
+            k2 := k3;
+            k3 := k;
+          };
+          if (k0 > k2) {
+            let v = t0;
+            t0 := t2;
+            t2 := v;
+            let k = k0;
+            k0 := k2;
+            k2 := k;
+          };
+          if (k1 > k3) {
+            let v = t1;
+            t1 := t3;
+            t3 := v;
+            let k = k1;
+            k1 := k3;
+            k3 := k;
+          };
+          if (k1 > k2) {
+            let v = t1;
+            t1 := t2;
+            t2 := v;
+            let k = k1;
+            k1 := k2;
+            k2 := k;
+          };
+          if (k4 > k5) {
+            let v = t4;
+            t4 := t5;
+            t5 := v;
+            let k = k4;
+            k4 := k5;
+            k5 := k;
+          };
+          if (k4 > k6) {
+            let v = t4;
+            t4 := t6;
+            t6 := v;
+            let k = k4;
+            k4 := k6;
+            k6 := k;
+          };
+          if (k5 > k6) {
+            let v = t5;
+            t5 := t6;
+            t6 := v;
+            let k = k5;
+            k5 := k6;
+            k6 := k;
+          };
+          if (k0 > k4) {
+            let v = t0;
+            t0 := t4;
+            t4 := v;
+            let k = k0;
+            k0 := k4;
+            k4 := k;
+          };
+          if (k1 > k5) {
+            let v = t1;
+            t1 := t5;
+            t5 := v;
+            let k = k1;
+            k1 := k5;
+            k5 := k;
+          };
+          if (k2 > k6) {
+            let v = t2;
+            t2 := t6;
+            t6 := v;
+            let k = k2;
+            k2 := k6;
+            k6 := k;
+          };
+          if (k2 > k4) {
+            let v = t2;
+            t2 := t4;
+            t4 := v;
+            let k = k2;
+            k2 := k4;
+            k4 := k;
+          };
+          if (k3 > k5) {
+            let v = t3;
+            t3 := t5;
+            t5 := v;
+            let k = k3;
+            k3 := k5;
+            k5 := k;
+          };
+          if (k1 > k2) {
+            let v = t1;
+            t1 := t2;
+            t2 := v;
+            let k = k1;
+            k1 := k2;
+            k2 := k;
+          };
+          if (k3 > k4) {
+            let v = t3;
+            t3 := t4;
+            t4 := v;
+            let k = k3;
+            k3 := k4;
+            k4 := k;
+          };
+          if (k5 > k6) {
+            let v = t5;
+            t5 := t6;
+            t6 := v;
+            let k = k5;
+            k5 := k6;
+            k6 := k;
+          };
+
+          array[from] := t0;
+          array[from + 1] := t1;
+          array[from + 2] := t2;
+          array[from + 3] := t3;
+          array[from + 4] := t4;
+          array[from + 5] := t5;
+          array[from + 6] := t6;
+        };
+        case (8) {
+          let from = Nat32.toNat(prev);
+          var t0 = array[from];
+          var k0 = key(t0) << 3;
+          var t1 = array[from + 1];
+          var k1 = (key(t1) << 3) ^ 1;
+          var t2 = array[from + 2];
+          var k2 = (key(t2) << 3) ^ 2;
+          var t3 = array[from + 3];
+          var k3 = (key(t3) << 3) ^ 3;
+          var t4 = array[from + 4];
+          var k4 = (key(t4) << 3) ^ 4;
+          var t5 = array[from + 5];
+          var k5 = (key(t5) << 3) ^ 5;
+          var t6 = array[from + 6];
+          var k6 = (key(t6) << 3) ^ 6;
+          var t7 = array[from + 7];
+          var k7 = (key(t7) << 3) ^ 7;
+
+          if (k0 > k1) {
+            let v = t0;
+            t0 := t1;
+            t1 := v;
+            let k = k0;
+            k0 := k1;
+            k1 := k;
+          };
+          if (k2 > k3) {
+            let v = t2;
+            t2 := t3;
+            t3 := v;
+            let k = k2;
+            k2 := k3;
+            k3 := k;
+          };
+          if (k4 > k5) {
+            let v = t4;
+            t4 := t5;
+            t5 := v;
+            let k = k4;
+            k4 := k5;
+            k5 := k;
+          };
+          if (k6 > k7) {
+            let v = t6;
+            t6 := t7;
+            t7 := v;
+            let k = k6;
+            k6 := k7;
+            k7 := k;
+          };
+          if (k0 > k2) {
+            let v = t0;
+            t0 := t2;
+            t2 := v;
+            let k = k0;
+            k0 := k2;
+            k2 := k;
+          };
+          if (k1 > k3) {
+            let v = t1;
+            t1 := t3;
+            t3 := v;
+            let k = k1;
+            k1 := k3;
+            k3 := k;
+          };
+          if (k4 > k6) {
+            let v = t4;
+            t4 := t6;
+            t6 := v;
+            let k = k4;
+            k4 := k6;
+            k6 := k;
+          };
+          if (k5 > k7) {
+            let v = t5;
+            t5 := t7;
+            t7 := v;
+            let k = k5;
+            k5 := k7;
+            k7 := k;
+          };
+          if (k1 > k2) {
+            let v = t1;
+            t1 := t2;
+            t2 := v;
+            let k = k1;
+            k1 := k2;
+            k2 := k;
+          };
+          if (k5 > k6) {
+            let v = t5;
+            t5 := t6;
+            t6 := v;
+            let k = k5;
+            k5 := k6;
+            k6 := k;
+          };
+          if (k0 > k4) {
+            let v = t0;
+            t0 := t4;
+            t4 := v;
+            let k = k0;
+            k0 := k4;
+            k4 := k;
+          };
+          if (k3 > k7) {
+            let v = t3;
+            t3 := t7;
+            t7 := v;
+            let k = k3;
+            k3 := k7;
+            k7 := k;
+          };
+          if (k1 > k5) {
+            let v = t1;
+            t1 := t5;
+            t5 := v;
+            let k = k1;
+            k1 := k5;
+            k5 := k;
+          };
+          if (k2 > k6) {
+            let v = t2;
+            t2 := t6;
+            t6 := v;
+            let k = k2;
+            k2 := k6;
+            k6 := k;
+          };
+          if (k1 > k4) {
+            let v = t1;
+            t1 := t4;
+            t4 := v;
+            let k = k1;
+            k1 := k4;
+            k4 := k;
+          };
+          if (k3 > k6) {
+            let v = t3;
+            t3 := t6;
+            t6 := v;
+            let k = k3;
+            k3 := k6;
+            k6 := k;
+          };
+          if (k2 > k4) {
+            let v = t2;
+            t2 := t4;
+            t4 := v;
+            let k = k2;
+            k2 := k4;
+            k4 := k;
+          };
+          if (k3 > k5) {
+            let v = t3;
+            t3 := t5;
+            t5 := v;
+            let k = k3;
+            k3 := k5;
+            k5 := k;
+          };
+          if (k1 > k2) {
+            let v = t1;
+            t1 := t2;
+            t2 := v;
+            let k = k1;
+            k1 := k2;
+            k2 := k;
+          };
+          if (k3 > k4) {
+            let v = t3;
+            t3 := t4;
+            t4 := v;
+            let k = k3;
+            k3 := k4;
+            k4 := k;
+          };
+          if (k5 > k6) {
+            let v = t5;
+            t5 := t6;
+            t6 := v;
+            let k = k5;
+            k5 := k6;
+            k6 := k;
+          };
+
+          array[from] := t0;
+          array[from + 1] := t1;
+          array[from + 2] := t2;
+          array[from + 3] := t3;
+          array[from + 4] := t4;
+          array[from + 5] := t5;
+          array[from + 6] := t6;
+          array[from + 7] := t7;
+        };
+        case (_) bucketSortRecursive(array, scratch, key, prev, count, bits + BITS_ADD);
       };
       prev := count;
     };
-
-    for (i in array.keys()) array[i] := scratch[i];
   };
 
   public func radixSort16<T>(array : [T], key : T -> Nat32) : [T] {
