@@ -66,7 +66,7 @@ let ns = [
   10,
   100,
   1000,
-  10_000
+  10_000,
 ];
 
 let mods : [Nat32] = [
@@ -128,7 +128,6 @@ for (n in ns.vals()) {
 //     };
 //     true;
 //   };
-
 
 //   let p = VarArray.tabulate<Nat32>(n, func i = Nat32.fromNat(i));
 //   loop {
