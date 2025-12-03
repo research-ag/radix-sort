@@ -17,7 +17,7 @@ func testRadixSort(n : Nat, mod : Nat32) {
     n,
     func(i) {
       seed := seed *% A +% C;
-      (seed, i);
+      (seed % mod, i);
     },
   );
 

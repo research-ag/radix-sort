@@ -185,11 +185,11 @@ module {
         case (3) {
           let from = Nat32.toNat(prev);
           var t0 = array[from];
-          var k0 = key(t0) << 2;
+          var k0 = key(t0);
           var t1 = array[from + 1];
-          var k1 = (key(t1) << 2) ^ 1;
+          var k1 = key(t1);
           var t2 = array[from + 2];
-          var k2 = (key(t2) << 2) ^ 2;
+          var k2 = key(t2);
 
           if (k0 > k1) {
             let v = t0;
