@@ -128,9 +128,11 @@ module {
     if (bits == 0) {
       for (x in array.vals()) counts[Nat32.toNat(key(x) >> SHIFT)] +%= 1;
     } else {
-      for (i in Nat32.range(from, to)) {
+      var i = from;
+      while (i < to) {
         let x = key(array[Nat32.toNat(i)]);
         counts[Nat32.toNat((x << bits) >> SHIFT)] +%= 1;
+        i +%= 1;
       };
     };
 
@@ -149,21 +151,25 @@ module {
         counts[digit] := pos +% 1;
       };
     } else {
-      for (i in Nat32.range(from, to)) {
+      var i = from;
+      while (i < to) {
         let x = array[Nat32.toNat(i)];
         let digit = Nat32.toNat((key(x) << bits) >> SHIFT);
         let pos = counts[digit];
         scratch[Nat32.toNat(pos)] := x;
         counts[digit] := pos +% 1;
+        i +%= 1;
       };
     };
 
     if (bits == 0) {
       for (i in array.keys()) array[i] := scratch[i];
     } else {
-      for (i in Nat32.range(from, to)) {
+      var i = from;
+      while (i < to) {
         let ii = Nat32.toNat(i);
         array[ii] := scratch[ii];
+        i +%= 1;
       };
     };
 
