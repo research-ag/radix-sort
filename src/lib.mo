@@ -185,7 +185,6 @@ module {
     for (count in counts.vals()) {
       let len = count -% prev;
       switch (len) {
-        case (0) {};
         case (1) {
           let from = Nat32.toNat(prev);
           dest[from] := scratch[from];
@@ -203,6 +202,7 @@ module {
             dest[from + 1] := v1;
           };
         };
+        case (0) {};
         case (3) {
           let from = Nat32.toNat(prev);
           var t0 = scratch[from];
