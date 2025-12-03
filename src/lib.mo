@@ -117,6 +117,7 @@ module {
   };
 
   func bucketSortRecursive<T>(array : [var T], scratch : [var T], key : T -> Nat32, from : Nat32, to : Nat32, bits : Nat32) {
+    if (bits >= 32) return;
     let n = to - from;
 
     let SHIFT = Nat32.bitcountLeadingZero(n) + 1;
