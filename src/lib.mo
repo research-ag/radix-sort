@@ -113,11 +113,29 @@ module {
       return;
     };
 
-    bucketSortRecursive(array, scratch, key, 0 : Nat32, Nat32.fromNat(n), 0 : Nat32);
+    bucketSortRecursive(array, scratch, key, 0 : Nat32, Nat32.fromNat(n), 0 : Nat32, false);
   };
 
-  func bucketSortRecursive<T>(array : [var T], scratch : [var T], key : T -> Nat32, from : Nat32, to : Nat32, bits : Nat32) {
-    if (bits >= 32) return;
+  func bucketSortRecursive<T>(
+    array : [var T],
+    scratch : [var T],
+    key : T -> Nat32,
+    from : Nat32,
+    to : Nat32,
+    bits : Nat32,
+    odd : Bool
+  ) {
+    if (bits >= 32) {
+      if (odd) {
+        var i = from;
+        while (i < to) {
+          let ii = Nat32.toNat(i);
+          scratch[ii] := array[ii];
+          i +%= 1;
+        };
+      };
+      return;
+    };
     let n = to - from;
 
     let SHIFT = Nat32.bitcountLeadingZero(n) + 1;
@@ -163,13 +181,14 @@ module {
     };
 
     var prev : Nat32 = from;
+    let dest = if (not odd) array else scratch;
     for (count in counts.vals()) {
       let len = count -% prev;
       switch (len) {
         case (0) {};
         case (1) {
           let from = Nat32.toNat(prev);
-          array[from] := scratch[from];
+          dest[from] := scratch[from];
         };
         case (2) {
           let from = Nat32.toNat(prev);
@@ -177,11 +196,11 @@ module {
           var v1 = scratch[from + 1];
 
           if (key(v0) > key(v1)) {
-            array[from] := v1;
-            array[from + 1] := v0;
+            dest[from] := v1;
+            dest[from + 1] := v0;
           } else {
-            array[from] := v0;
-            array[from + 1] := v1;
+            dest[from] := v0;
+            dest[from + 1] := v1;
           };
         };
         case (3) {
@@ -218,9 +237,9 @@ module {
             k1 := k;
           };
 
-          array[from] := t0;
-          array[from + 1] := t1;
-          array[from + 2] := t2;
+          dest[from] := t0;
+          dest[from + 1] := t1;
+          dest[from + 2] := t2;
         };
         case (4) {
           let from = Nat32.toNat(prev);
@@ -274,10 +293,10 @@ module {
             k2 := k;
           };
 
-          array[from] := t0;
-          array[from + 1] := t1;
-          array[from + 2] := t2;
-          array[from + 3] := t3;
+          dest[from] := t0;
+          dest[from + 1] := t1;
+          dest[from + 2] := t2;
+          dest[from + 3] := t3;
         };
         case (5) {
           let from = Nat32.toNat(prev);
@@ -365,11 +384,11 @@ module {
             k2 := k;
           };
 
-          array[from] := t0;
-          array[from + 1] := t1;
-          array[from + 2] := t2;
-          array[from + 3] := t3;
-          array[from + 4] := t4;
+          dest[from] := t0;
+          dest[from + 1] := t1;
+          dest[from + 2] := t2;
+          dest[from + 3] := t3;
+          dest[from + 4] := t4;
         };
         case (6) {
           let from = Nat32.toNat(prev);
@@ -483,12 +502,12 @@ module {
             k3 := k;
           };
 
-          array[from] := t0;
-          array[from + 1] := t1;
-          array[from + 2] := t2;
-          array[from + 3] := t3;
-          array[from + 4] := t4;
-          array[from + 5] := t5;
+          dest[from] := t0;
+          dest[from + 1] := t1;
+          dest[from + 2] := t2;
+          dest[from + 3] := t3;
+          dest[from + 4] := t4;
+          dest[from + 5] := t5;
         };
         case (7) {
           let from = Nat32.toNat(prev);
@@ -636,13 +655,13 @@ module {
             k6 := k;
           };
 
-          array[from] := t0;
-          array[from + 1] := t1;
-          array[from + 2] := t2;
-          array[from + 3] := t3;
-          array[from + 4] := t4;
-          array[from + 5] := t5;
-          array[from + 6] := t6;
+          dest[from] := t0;
+          dest[from + 1] := t1;
+          dest[from + 2] := t2;
+          dest[from + 3] := t3;
+          dest[from + 4] := t4;
+          dest[from + 5] := t5;
+          dest[from + 6] := t6;
         };
         case (8) {
           let from = Nat32.toNat(prev);
@@ -832,23 +851,17 @@ module {
             k6 := k;
           };
 
-          array[from] := t0;
-          array[from + 1] := t1;
-          array[from + 2] := t2;
-          array[from + 3] := t3;
-          array[from + 4] := t4;
-          array[from + 5] := t5;
-          array[from + 6] := t6;
-          array[from + 7] := t7;
+          dest[from] := t0;
+          dest[from + 1] := t1;
+          dest[from + 2] := t2;
+          dest[from + 3] := t3;
+          dest[from + 4] := t4;
+          dest[from + 5] := t5;
+          dest[from + 6] := t6;
+          dest[from + 7] := t7;
         };
         case (_) {
-          bucketSortRecursive(scratch, array, key, prev, count, bits + BITS_ADD);
-          var i = prev;
-          while (i < count) {
-            let ii = Nat32.toNat(i);
-            array[ii] := scratch[ii];
-            i +%= 1;
-          };
+          bucketSortRecursive(scratch, array, key, prev, count, bits + BITS_ADD, not odd);
         };
       };
       prev := count;

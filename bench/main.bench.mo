@@ -17,7 +17,7 @@ module {
     bench.description("Nat64 bit operations.");
 
     let rows = [
-      "sort",
+      "bucketSort",
       "radixSort16",
       "radixSort16InPlace",
       "Zhus",
@@ -39,7 +39,7 @@ module {
       5,
       func(j) = Array.tabulate<Nat32>(
         [1_000, 10_000, 12_000, 100_000, 1_000_000][j],
-        func(i) = Nat32.fromIntWrap(Nat64.toNat(rng.nat64() % 1_000_000)),
+        func(i) = Nat32.fromIntWrap(Nat64.toNat(rng.nat64() % (2 ** 32))),
       ),
     );
 
@@ -51,7 +51,8 @@ module {
 
         switch (row) {
           case (0) {
-            func() = ignore Sort.sort<Nat32>(sourceArrays[col], func i = i);
+            let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);
+            func() = Sort.bucketSort<Nat32>(varSource, func i = i);
           };
           case (1) {
             func() = ignore Sort.radixSort16<Nat32>(sourceArrays[col], func i = i);
