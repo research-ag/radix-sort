@@ -5,6 +5,7 @@ import Nat "mo:core/Nat";
 import Nat64 "mo:core/Nat64";
 import Nat32 "mo:core/Nat32";
 import Text "mo:core/Text";
+import VarArray "mo:core/VarArray";
 import Prim "mo:prim";
 import Sort "../src";
 import Zhus "mo:zhus/sort";
@@ -18,9 +19,10 @@ module {
 
     let rows = [
       "bucketSort",
-      "radixSort16",
-      "radixSort16InPlace",
+      "bucketSortWorstCase",
+      "radixSort",
       "Zhus",
+      "VarArray"
     ];
     let cols = [
       "1000",
@@ -39,7 +41,7 @@ module {
       5,
       func(j) = Array.tabulate<Nat32>(
         [1_000, 10_000, 12_000, 100_000, 1_000_000][j],
-        func(i) = Nat32.fromIntWrap(Nat64.toNat(rng.nat64() % 1_000_000)),
+        func(i) = Nat64.toNat32(rng.nat64() % 1_000_000),
       ),
     );
 
@@ -55,15 +57,20 @@ module {
             func() = Sort.bucketSort<Nat32>(varSource, func i = i, ?1_000_000);
           };
           case (1) {
-            func() = ignore Sort.radixSort16<Nat32>(sourceArrays[col], func i = i);
+            let varSource = VarArray.repeat<Nat32>(0, sourceArrays[col].size());
+            func() = Sort.bucketSort<Nat32>(varSource, func i = i, ?1_000_000);
           };
           case (2) {
             let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);
-            func() = Sort.radixSort16InPlace<Nat32>(varSource, func i = i);
+            func() = Sort.radixSort<Nat32>(varSource, func i = i);
           };
           case (3) {
             let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);
             func() = Zhus.sortNat32<Nat32>(varSource, func i = i);
+          };
+          case (4) {
+            let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);
+            func() = VarArray.sortInPlace<Nat32>(varSource, Nat32.compare);
           };
           case (_) Prim.trap("Row not implemented");
         };

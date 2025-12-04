@@ -944,7 +944,6 @@ module {
         let pp = VarArray.clone(p);
         batcherSortSmall(pp, pp, func x = x, 0, n);
         if (Array.fromVarArray<Nat32>(pp) != id) Runtime.trap(debug_show pp);
-
       };
       do {
         let pp = VarArray.clone(p);
