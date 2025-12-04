@@ -657,13 +657,18 @@ module {
     };
   };
 
-  public func radixSort<T>(array : [var T], key : T -> Nat32) {
+  public func radixSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32) {
     let n = array.size();
     if (n <= 1) return;
 
+    let bits : Nat32 = 32 - (switch (max) {
+      case (null) 0;
+      case (?x) Nat32.bitcountLeadingZero(x);
+    });
+
     let NBITS = 31 - Nat32.bitcountLeadingZero(Nat32.fromNat(n));
-    let STEPS = (32 + NBITS - 1) / NBITS;
-    let RADIX_BITS = (32 + STEPS - 1) / STEPS;
+    let STEPS = (bits + NBITS - 1) / NBITS;
+    let RADIX_BITS = (bits + STEPS - 1) / STEPS;
     let RADIX = 1 << RADIX_BITS;
     let MASK = RADIX -% 1;
 

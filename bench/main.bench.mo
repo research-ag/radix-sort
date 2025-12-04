@@ -63,7 +63,7 @@ module {
           };
           case (2) {
             let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);
-            func() = Sort.radixSort<Nat32>(varSource, func i = i);
+            func() = Sort.radixSort<Nat32>(varSource, func i = i, null);
           };
           case (3) {
             let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);
