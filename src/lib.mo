@@ -664,16 +664,24 @@ module {
     let n = array.size();
     if (n <= 1) return;
 
-    let bits : Nat32 = 32 - (switch (max) {
-      case (null) 0;
-      case (?x) {
-        if (x == 0) return;
-        Nat32.bitcountLeadingZero(x);
-      };
-    });
+    let bits : Nat32 = 32 - (
+      switch (max) {
+        case (null) 0;
+        case (?x) {
+          if (x == 0) return;
+          Nat32.bitcountLeadingZero(x);
+        };
+      }
+    );
 
     let NBITS = 31 - Nat32.bitcountLeadingZero(Nat32.fromNat(n));
     let STEPS = (bits + NBITS - 1) / NBITS;
+
+    if (STEPS > 5) {
+      VarArray.sortInPlace(array, func(x, y) = Nat32.compare(key(x), key(y)));
+      return;
+    };
+
     let RADIX_BITS = (bits + STEPS - 1) / STEPS;
     let RADIX = 1 << RADIX_BITS;
     let MASK = RADIX -% 1;
