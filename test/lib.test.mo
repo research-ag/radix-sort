@@ -5,6 +5,20 @@ import Runtime "mo:core/Runtime";
 import VarArray "mo:core/VarArray";
 import Random "mo:core/Random";
 
+func testOnArray(array : [var (Nat32, Nat)], f : [var (Nat32, Nat)] -> ()) {
+  let a = VarArray.clone(array);
+  let b = VarArray.clone(array);
+
+  f(a);
+  VarArray.sortInPlace(b, func (x, y) = Nat32.compare(x.0, y.0));
+
+  for (i in a.keys()) {
+    if (a[i] != b[i]) {
+      Runtime.trap("Sorting failed " # debug_show a # " " # debug_show b);
+    };
+  };
+};
+
 func testRadixSort(n : Nat, mod : Nat64, sort : ([var (Nat32, Nat)], Nat32) -> ()) {
   let rng : Random.Random = Random.seed(0x5f5f5f5f5f5f5f5f);
 
@@ -23,27 +37,59 @@ func testRadixSort(n : Nat, mod : Nat64, sort : ([var (Nat32, Nat)], Nat32) -> (
   };
 };
 
-let ns = [
-  1,
-  2,
-  3,
-  4,
-  8,
-  10,
-  100,
-  1000,
-  10_000,
-];
+func tests() {
+  let ns = [
+    1,
+    2,
+    3,
+    4,
+    8,
+    10,
+    100,
+    1000,
+    10_000,
+  ];
 
-let mods : [Nat64] = [
-  16,
-  100,
-  2 ** 32,
-];
+  let mods : [Nat64] = [
+    16,
+    100,
+    2 ** 32,
+  ];
 
-for (n in ns.vals()) {
-  for (mod in mods.vals()) {
-    testRadixSort(n, mod, func (a, max) = RadixSort.bucketSort(a, func(x, y) = x, ?max));
-    testRadixSort(n, mod, func (a, max) = RadixSort.radixSort(a, func(x, y) = x, ?max));
+  for (n in ns.vals()) {
+    for (mod in mods.vals()) {
+      testRadixSort(n, mod, func(a, max) = RadixSort.bucketSort(a, func(x, y) = x, ?max));
+      testRadixSort(n, mod, func(a, max) = RadixSort.radixSort(a, func(x, y) = x, ?max));
+    };
+  };
+
+  let arrays : [[var (Nat32, Nat)]] = [
+    // empty
+    [var],
+    // all equal keys
+    [var (5, 0), (5, 1), (5, 2)],
+    // already ascending
+    [var (1, 0), (2, 1), (3, 2), (4, 3)],
+    // descending
+    [var (4, 0), (3, 1), (2, 2), (1, 3)],
+    // single element
+    [var (7, 0)],
+    // two elements, equal
+    [var (2, 0), (2, 1)],
+    // mixed with duplicates
+    [var (2, 0), (1, 1), (2, 2), (1, 3)],
+    // longer descending
+    [var (6, 0), (5, 1), (4, 2), (3, 3), (2, 4), (1, 5)],
+    // all identical keys
+    [var (1, 0), (1, 1), (1, 2), (1, 3), (1, 4)],
+    // 8-element mixed
+    [var (3, 0), (1, 1), (4, 2), (1, 3), (5, 4), (2, 5), (3, 6), (0, 7)]
+  ];
+
+  for (a in arrays.vals()) {
+    testOnArray(a, func a = RadixSort.radixSort(a, func x = x.0, null));
+    testOnArray(a, func a = RadixSort.bucketSort(a, func x = x.0, null));
   };
 };
+
+tests();
