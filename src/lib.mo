@@ -1,18 +1,36 @@
 import VarArray "mo:core/VarArray";
 import Nat32 "mo:core/Nat32";
 
-/**
- * This module provides implementations of radix sort and bucket sort for sorting arrays of elements.
- * The sorts are based on a key function that maps elements to `Nat32` values.
- */
+/// This module provides implementations of radix sort and bucket sort for sorting arrays of elements.
+/// The sorts are based on a key function that maps elements to `Nat32` values.
 module {
-  /**
-   * Sorts an array in place using bucket sort.
-   *
-   * @param array The array to be sorted.
-   * @param key A function that maps an element of the array to a `Nat32` value.
-   * @param max An optional maximum value for the keys. If provided, it can optimize the sorting process.
-   */
+  /// Sorts an array in place using bucket sort.
+  ///
+  /// Example:
+  /// ```motoko
+  /// import RadixSort "mo:radix-sort";
+  /// import Array "mo:core/Array";
+  /// import VarArray "mo:core/VarArray";
+
+  /// // Example with a custom type
+  /// type User = {
+  ///   id : Nat32;
+  ///   name : Text;
+  /// };
+
+  /// let users : [var User] = [var
+  ///   { id = 101; name = "Alice" },
+  ///   { id = 22; name = "Bob" },
+  ///   { id = 75; name = "Charlie" },
+  ///   { id = 5; name = "David" },
+  /// ];
+  ///
+  /// // Sort the users by their 'id' field
+  /// RadixSort.bucketSort<User>(users, func(user) = user.id, null);
+
+  /// // The 'users' array is now sorted in-place
+  /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
+  /// ```
   public func bucketSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32) {
     let n = array.size();
     if (n <= 1) return;
@@ -670,13 +688,34 @@ module {
       newFrom := newTo;
     };
   };
-  /**
-   * Sorts an array in place using radix sort.
-   *
-   * @param array The array to be sorted.
-   * @param key A function that maps an element of the array to a `Nat32` value.
-   * @param max An optional maximum value for the keys. If provided, it can optimize the sorting process.
-   */
+
+  ///Sorts an array in place using radix sort.
+  ///
+  /// Example:
+  /// ```motoko
+  /// import RadixSort "mo:radix-sort";
+  /// import Array "mo:core/Array";
+  /// import VarArray "mo:core/VarArray";
+
+  /// // Example with a custom type
+  /// type User = {
+  ///   id : Nat32;
+  ///   name : Text;
+  /// };
+
+  /// let users : [var User] = [var
+  ///   { id = 101; name = "Alice" },
+  ///   { id = 22; name = "Bob" },
+  ///   { id = 75; name = "Charlie" },
+  ///   { id = 5; name = "David" },
+  /// ];
+  ///
+  /// // Sort the users by their 'id' field
+  /// RadixSort.radixSort<User>(users, func(user) = user.id, null);
+
+  /// // The 'users' array is now sorted in-place
+  /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
+  /// ```
   public func radixSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32) {
     let n = array.size();
     if (n <= 1) return;
