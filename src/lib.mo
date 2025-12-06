@@ -1,7 +1,18 @@
 import VarArray "mo:core/VarArray";
 import Nat32 "mo:core/Nat32";
 
+/**
+ * This module provides implementations of radix sort and bucket sort for sorting arrays of elements.
+ * The sorts are based on a key function that maps elements to `Nat32` values.
+ */
 module {
+  /**
+   * Sorts an array in place using bucket sort.
+   *
+   * @param array The array to be sorted.
+   * @param key A function that maps an element of the array to a `Nat32` value.
+   * @param max An optional maximum value for the keys. If provided, it can optimize the sorting process.
+   */
   public func bucketSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32) {
     let n = array.size();
     if (n <= 1) return;
@@ -659,7 +670,13 @@ module {
       newFrom := newTo;
     };
   };
-
+  /**
+   * Sorts an array in place using radix sort.
+   *
+   * @param array The array to be sorted.
+   * @param key A function that maps an element of the array to a `Nat32` value.
+   * @param max An optional maximum value for the keys. If provided, it can optimize the sorting process.
+   */
   public func radixSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32) {
     let n = array.size();
     if (n <= 1) return;
