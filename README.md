@@ -19,7 +19,7 @@ mops add sort
 The library provides two sorting functions: `radixSort` and `bucketSort`. For most use cases, `radixSort` is the recommended choice.
 
 ```motoko
-import RadixSort "mo:sort/Nat32Key";
+import Sort "mo:sort/Nat32Key";
 import Array "mo:core/Array";
 import VarArray "mo:core/VarArray";
 
@@ -37,7 +37,7 @@ let users : [var User] = [var
 ];
 
 // Sort the users by their 'id' field
-RadixSort.radixSort<User>(users, func(user) = user.id, null);
+Sort.radixSort<User>(users, func(user) = user.id, null);
 
 // The 'users' array is now sorted in-place
 Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]

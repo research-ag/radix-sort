@@ -8,7 +8,7 @@ module {
   ///
   /// Example:
   /// ```motoko
-  /// import RadixSort "mo:sort/Nat32Key";
+  /// import Sort "mo:sort/Nat32Key";
   /// import Array "mo:core/Array";
   /// import VarArray "mo:core/VarArray";
   ///
@@ -26,7 +26,7 @@ module {
   /// ];
   ///
   /// // Sort the users by their 'id' field
-  /// RadixSort.bucketSort<User>(users, func(user) = user.id, null);
+  /// Sort.bucketSort<User>(users, func(user) = user.id, null);
   ///
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
@@ -693,7 +693,7 @@ module {
   ///
   /// Example:
   /// ```motoko
-  /// import RadixSort "mo:sort/Nat32Key";
+  /// import Sort "mo:sort/Nat32Key";
   /// import Array "mo:core/Array";
   /// import VarArray "mo:core/VarArray";
   ///
@@ -711,7 +711,7 @@ module {
   /// ];
   ///
   /// // Sort the users by their 'id' field
-  /// RadixSort.radixSort<User>(users, func(user) = user.id, null);
+  /// Sort.radixSort<User>(users, func(user) = user.id, null);
   ///
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]

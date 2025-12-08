@@ -1,4 +1,4 @@
-import RadixSort "../src/Nat32Key";
+import Sort "../src/Nat32Key";
 import Nat32 "mo:core/Nat32";
 import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
@@ -58,8 +58,8 @@ func tests() {
 
   for (n in ns.vals()) {
     for (mod in mods.vals()) {
-      testRadixSort(n, mod, func(a, max) = RadixSort.bucketSort(a, func(x, y) = x, ?max));
-      testRadixSort(n, mod, func(a, max) = RadixSort.radixSort(a, func(x, y) = x, ?max));
+      testRadixSort(n, mod, func(a, max) = Sort.bucketSort(a, func(x, y) = x, ?max));
+      testRadixSort(n, mod, func(a, max) = Sort.radixSort(a, func(x, y) = x, ?max));
     };
   };
 
@@ -87,8 +87,8 @@ func tests() {
   ];
 
   for (a in arrays.vals()) {
-    testOnArray(a, func a = RadixSort.radixSort(a, func x = x.0, null));
-    testOnArray(a, func a = RadixSort.bucketSort(a, func x = x.0, null));
+    testOnArray(a, func a = Sort.radixSort(a, func x = x.0, null));
+    testOnArray(a, func a = Sort.bucketSort(a, func x = x.0, null));
   };
 };
 
