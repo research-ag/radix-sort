@@ -31,12 +31,12 @@ module {
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
-  public func bucketSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32) {
+  public func bucketSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32) {
     let n = array.size();
     if (n <= 1) return;
 
     let buffer = VarArray.repeat(array[0], n);
-    let bits : Nat32 = switch (max) {
+    let bits : Nat32 = switch (maxInclusive) {
       case (null) 0;
       case (?x) {
         if (x == 0) return;
@@ -716,12 +716,12 @@ module {
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
-  public func radixSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32) {
+  public func radixSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32) {
     let n = array.size();
     if (n <= 1) return;
 
     let bits : Nat32 = 32 - (
-      switch (max) {
+      switch (maxInclusive) {
         case (null) 0;
         case (?x) {
           if (x == 0) return;

@@ -45,15 +45,15 @@ Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bo
 
 ## API
 
-### `radixSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32)`
+### `radixSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32)`
 
 Sorts the given array in-place using an iterative radix sort algorithm.
 
 *   `array`: The array to be sorted.
 *   `key`: A function that extracts a `Nat32` key from an element of the array. The array will be sorted based on this key.
-*   `max`: An optional `Nat32` value representing the maximum possible value of the key. Providing this value can optimize the sorting process by tailoring the number of bits to consider. If `null` is passed, the sort will consider all 32 bits of the key.
+*   `maxInclusive`: An optional `Nat32` value representing the maximum possible value of the key. Providing this value can optimize the sorting process by tailoring the number of bits to consider. If `null` is passed, the sort will consider all 32 bits of the key.
 
-### `bucketSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32)`
+### `bucketSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32)`
 
 Sorts the given array in-place using a recursive bucket sort. This implementation is highly optimized for random data but may be slightly slower than `radixSort` in the general case.
 
