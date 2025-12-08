@@ -8,7 +8,7 @@ module {
   ///
   /// Example:
   /// ```motoko
-  /// import RadixSort "mo:sort/SortNat32";
+  /// import RadixSort "mo:sort/Nat32Key";
   /// import Array "mo:core/Array";
   /// import VarArray "mo:core/VarArray";
   ///
@@ -693,7 +693,7 @@ module {
   ///
   /// Example:
   /// ```motoko
-  /// import RadixSort "mo:sort/SortNat32";
+  /// import RadixSort "mo:sort/Nat32Key";
   /// import Array "mo:core/Array";
   /// import VarArray "mo:core/VarArray";
   ///

@@ -7,7 +7,7 @@ import Nat32 "mo:core/Nat32";
 import Text "mo:core/Text";
 import VarArray "mo:core/VarArray";
 import Prim "mo:prim";
-import Sort "../src/SortNat32";
+import Sort "../src/Nat32Key";
 import Zhus "mo:zhus/sort";
 
 module {

@@ -19,7 +19,7 @@ mops add sort
 The library provides two sorting functions: `radixSort` and `bucketSort`. For most use cases, `radixSort` is the recommended choice.
 
 ```motoko
-import RadixSort "mo:sort/SortNat32";
+import RadixSort "mo:sort/Nat32Key";
 import Array "mo:core/Array";
 import VarArray "mo:core/VarArray";
 
