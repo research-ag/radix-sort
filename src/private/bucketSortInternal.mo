@@ -190,19 +190,15 @@ module {
             };
           };
 
-          tv := t3;
-          kv := k3;
-          if (kv < k2) {
+          if (k3 < k2) {
+            tv := t3;
             t3 := t2;
-            k3 := k2;
-            if (kv < k1) {
+            if (k3 < k1) {
               t2 := t1;
-              k2 := k1;
-              if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              if (k3 < k0) { t1 := t0; t0 := tv } else {
                 t1 := tv;
-                k1 := kv;
               };
-            } else { t2 := tv; k2 := kv };
+            } else { t2 := tv };
           };
 
           dest[from] := t0;
