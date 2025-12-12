@@ -3,8 +3,11 @@ import Random "mo:core/Random";
 import Nat "mo:core/Nat";
 import Nat64 "mo:core/Nat64";
 import Nat32 "mo:core/Nat32";
+import Array "mo:core/Array";
 import VarArray "mo:core/VarArray";
 import Option "mo:core/Option";
+import Text "mo:core/Text";
+import Prim "mo:prim";
 import Sort "../src/Nat32Key";
 
 module {
@@ -808,20 +811,29 @@ module {
     bench.cols(cols);
 
     let rng : Random.Random = Random.seed(0x5f5f5f5f5f5f5f5f);
-    let array : [var Nat32] = VarArray.tabulate<Nat32>(320, func(i) = Nat64.toNat32(rng.nat64() % (2 ** 32)));
+    let arrays : [[[var Nat32]]] = Array.tabulate(
+      rows.size(),
+      func(_) = Array.tabulate(
+        cols.size(),
+        func(i) {
+          let n = Option.unwrap(Nat.fromText(cols[i]));
+          VarArray.tabulate<Nat32>(
+            n,
+            func(_) = Nat64.toNat32(rng.nat64() >> 32),
+          );
+        },
+      ),
+    );
 
     bench.runner(
       func(row, col) {
-        let n = Option.unwrap(Nat.fromText(col));
-        let a = VarArray.sliceToVarArray(array, 0, n);
-        if (row == "merge") {
-          mergeSort(a, func i = i);
-        } else if (row == "bucket") {
-          Sort.bucketSort(a, func i = i, null);
-        } else if (row == "radix") {
-          Sort.radixSort(a, func i = i, null);
-        } else if (row == "var-array") {
-          VarArray.sortInPlace(a, Nat32.compare);
+        let ?ci = Array.indexOf<Text>(cols, Text.equal, col) else Prim.trap("Unknown column");
+        switch (row) {
+          case ("merge") mergeSort(arrays[0][ci], func i = i);
+          case ("bucket") Sort.bucketSort(arrays[1][ci], func i = i, null);
+          case ("radix") Sort.radixSort(arrays[2][ci], func i = i, null);
+          case ("var-array") VarArray.sortInPlace(arrays[3][ci], Nat32.compare);
+          case (_) Prim.trap("Unknown row");
         };
       }
     );
