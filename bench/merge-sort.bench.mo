@@ -3,6 +3,7 @@ import Random "mo:core/Random";
 import Nat "mo:core/Nat";
 import Nat64 "mo:core/Nat64";
 import Nat32 "mo:core/Nat32";
+import Nat8 "mo:core/Nat8";
 import Array "mo:core/Array";
 import VarArray "mo:core/VarArray";
 import Option "mo:core/Option";
@@ -14,16 +15,16 @@ module {
   func mergeSort<T>(array : [var T], key : T -> Nat32) {
     // Stable merge sort in a bottom-up iterative style. Same algorithm as the sort in Buffer.
     let size = array.size();
-    if (size <= 1) {
-      return;
-    };
-    let scratchSpace = VarArray.repeat<T>(array[0], size);
+    if (size <= 1) return;
 
     var i = 0;
     while (i < size) {
       insertionSortSmall(array, array, key, i, Nat.min(8, size - i));
       i += 8;
     };
+    if (i <= 8) return;
+
+    let scratchSpace = VarArray.repeat<T>(array[0], size);
 
     var currSize = 8; // current size of the subarrays being merged
     var oddIteration = false;
@@ -76,6 +77,41 @@ module {
         array[i] := scratchSpace[i];
         i += 1;
       };
+    };
+  };
+
+  let nat = Nat8.toNat;
+
+  func mergeSort16<T>(buffer : [var T], key : T -> Nat32) {
+    let size = Nat8.min(16, Nat8.fromIntWrap(buffer.size()));
+    if (size <= 1) return;
+    if (size <= 8) {
+      insertionSortSmall(buffer, buffer, key, 0, nat(Nat8.min(8, size)));
+      return;
+    };
+    let len1 = size / 2;
+    let len2 = size -% len1; 
+    let dest = VarArray.repeat(buffer[0], nat(len1));
+    insertionSortSmall(buffer, dest, key, 0, nat(len1));
+    insertionSortSmall(buffer, buffer, key, nat(len1), nat(len2));
+    var pos : Nat8 = 0;
+    var i : Nat8 = 0; // in dest
+    var j : Nat8 = len1; // in buffer
+    label L while (pos < size) {
+      if (i == len1) {
+        buffer[nat(pos)] := buffer[nat(j)];
+        j +%= 1;
+      } else if (j == size) {
+        buffer[nat(pos)] := dest[nat(i)];
+        i +%= 1;
+      } else if (key(dest[nat(i)]) <= key(buffer[nat(j)])) {
+        buffer[nat(pos)] := dest[nat(i)];
+        i +%= 1;
+      } else {
+        buffer[nat(pos)] := buffer[nat(j)];
+        j +%= 1;
+      }; 
+      pos +%= 1;
     };
   };
 
@@ -644,14 +680,15 @@ module {
 
     let rows = [
       "merge",
+      "merge16",
       "bucket",
       "radix",
       "var-array",
     ];
     let cols = [
-      "5",
-      "10",
-      "20",
+      "8",
+      "12",
+      "16",
       "40",
       "80",
       "160",
@@ -681,9 +718,10 @@ module {
         let ?ci = Array.indexOf<Text>(cols, Text.equal, col) else Prim.trap("Unknown column");
         switch (row) {
           case ("merge") mergeSort(arrays[0][ci], func i = i);
-          case ("bucket") Sort.bucketSort(arrays[1][ci], func i = i, null);
-          case ("radix") Sort.radixSort(arrays[2][ci], func i = i, null);
-          case ("var-array") VarArray.sortInPlace(arrays[3][ci], Nat32.compare);
+          case ("merge16") mergeSort16(arrays[1][ci], func i = i);
+          case ("bucket") Sort.bucketSort(arrays[2][ci], func i = i, null);
+          case ("radix") Sort.radixSort(arrays[3][ci], func i = i, null);
+          case ("var-array") VarArray.sortInPlace(arrays[4][ci], Nat32.compare);
           case (_) Prim.trap("Unknown row");
         };
       }
