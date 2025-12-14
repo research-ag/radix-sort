@@ -6,7 +6,9 @@ import VarArray "mo:core/VarArray";
 import Random "mo:core/Random";
 import Int "mo:core/Int";
 import Array "mo:core/Array";
+
 import Internals "../src/private/internals";
+import { insertionSortSmall } "../src/private/insertion";
 
 func testOnArray(array : [var (Nat32, Nat)], f : [var (Nat32, Nat)] -> ()) {
   let a = VarArray.clone(array);
@@ -113,7 +115,7 @@ func testInsertionSortSmall(n : Nat) {
   loop {
     do {
       let pp = VarArray.clone(p);
-      Internals.insertionSortSmall(pp, pp, func x = x, 0 : Nat32, Nat32.fromNat(n));
+      insertionSortSmall(pp, pp, func x = x, 0 : Nat32, Nat32.fromNat(n));
       if (Array.fromVarArray<Nat32>(pp) != id) Runtime.trap(debug_show pp);
     };
   } while (next_permutation(p));
