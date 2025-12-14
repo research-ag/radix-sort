@@ -4,7 +4,6 @@ import Nat "mo:core/Nat";
 import Nat64 "mo:core/Nat64";
 import Nat32 "mo:core/Nat32";
 import VarArray "mo:core/VarArray";
-import Internals "../src/private/internals";
 import { insertionSortSmall } "../src/private/insertion";
 
 module {

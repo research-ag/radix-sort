@@ -9,6 +9,7 @@ import Array "mo:core/Array";
 
 import Internals "../src/private/internals";
 import { insertionSortSmall } "../src/private/insertion";
+import { mergeSort; mergeSort16 } "../src/private/merge";
 
 func testOnArray(array : [var (Nat32, Nat)], f : [var (Nat32, Nat)] -> ()) {
   let a = VarArray.clone(array);
@@ -48,7 +49,7 @@ func testMergeSort16(n : Nat) {
     n,
     2 ** 32,
     func(buffer, _) {
-      Internals.mergeSort16(
+      mergeSort16(
         buffer,
         dest,
         func(x, _) = x,
@@ -169,7 +170,7 @@ func tests() {
   };
 
   for (n in ns.vals()) {
-    testSort(n, 2 ** 32, func(a, max) = Internals.mergeSort(a, func(x, y) = x));
+    testSort(n, 2 ** 32, func(a, max) = mergeSort(a, func(x, y) = x));
   };
 
   let arrays : [[var (Nat32, Nat)]] = [
@@ -198,7 +199,7 @@ func tests() {
   for (a in arrays.vals()) {
     testOnArray(a, func a = Sort.radixSort(a, func x = x.0, null));
     testOnArray(a, func a = Sort.bucketSort(a, func x = x.0, null));
-    testOnArray(a, func a = Internals.mergeSort(a, func(x, y) = x));
+    testOnArray(a, func a = mergeSort(a, func(x, y) = x));
   };
 };
 

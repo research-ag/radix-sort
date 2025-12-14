@@ -2,6 +2,7 @@ import VarArray "mo:core/VarArray";
 import Nat32 "mo:core/Nat32";
 import Internals "private/internals";
 import { insertionSortSmall } "private/insertion";
+import { mergeSort } "private/merge";
 
 /// This module provides implementations of radix sort and bucket sort for sorting arrays of elements.
 /// The sorts are based on a key function that maps elements to `Nat32` values.
@@ -97,7 +98,7 @@ module {
     let STEPS = (bits + NBITS - 1) / NBITS;
 
     if (STEPS > 3) {
-      Internals.mergeSort(array, key);
+      mergeSort(array, key);
       return;
     };
 
