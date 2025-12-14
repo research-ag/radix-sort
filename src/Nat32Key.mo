@@ -1,6 +1,6 @@
 import VarArray "mo:core/VarArray";
 import Nat32 "mo:core/Nat32";
-import Internals "private/internals";
+import Bucket "private/bucket";
 import { insertionSortSmall } "private/insertion";
 import { mergeSort } "private/merge";
 
@@ -39,7 +39,7 @@ module {
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
   public func bucketSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32) {
-    Internals.bucketSort(
+    Bucket.bucketSort(
       array,
       key,
       maxInclusive,

@@ -7,7 +7,7 @@ import Random "mo:core/Random";
 import Int "mo:core/Int";
 import Array "mo:core/Array";
 
-import Internals "../src/private/internals";
+import { bucketSort } "../src/private/bucket";
 import { insertionSortSmall } "../src/private/insertion";
 import { mergeSort; mergeSort16 } "../src/private/merge";
 
@@ -157,7 +157,7 @@ func tests() {
   for (f in fs.vals()) {
     for (mod in mods.vals()) {
       for (n in ns.vals()) if (n <= 1000) {
-        testSort(n, mod, func(a, max) = Internals.bucketSort(a, func(x, y) = x, ?max, f));
+        testSort(n, mod, func(a, max) = bucketSort(a, func(x, y) = x, ?max, f));
       };
     };
   };
