@@ -8,6 +8,10 @@ module {
   public func bucketSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32, radixBits : Nat32 -> Nat32) {
     let n = array.size();
     if (n <= 1) return;
+    if (n <= 8) {
+      insertionSortSmall(array, array, key, 0 : Nat32, Nat32.fromNat(n));
+      return;
+    };
 
     let buffer = VarArray.repeat(array[0], n);
     let bits : Nat32 = switch (maxInclusive) {
