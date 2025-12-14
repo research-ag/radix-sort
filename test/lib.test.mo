@@ -166,6 +166,10 @@ func tests() {
     };
   };
 
+  for (n in ns.vals()) {
+    testSort(n, 2 ** 32, func(a, max) = BucketSortInternal.mergeSort(a, func(x, y) = x));
+  };
+
   let arrays : [[var (Nat32, Nat)]] = [
     // empty
     [var],
@@ -192,6 +196,7 @@ func tests() {
   for (a in arrays.vals()) {
     testOnArray(a, func a = Sort.radixSort(a, func x = x.0, null));
     testOnArray(a, func a = Sort.bucketSort(a, func x = x.0, null));
+    testOnArray(a, func a = BucketSortInternal.mergeSort(a, func(x, y) = x));
   };
 };
 

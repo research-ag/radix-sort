@@ -77,6 +77,10 @@ module {
   public func radixSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32) {
     let n = array.size();
     if (n <= 1) return;
+    if (n <= 8) {
+      BucketSortInternal.insertionSortSmall(array, array, key, 0 : Nat32, Nat32.fromNat(n));
+      return;
+    };
 
     let bits : Nat32 = 32 - (
       switch (maxInclusive) {
@@ -91,8 +95,8 @@ module {
     let NBITS = 31 - Nat32.bitcountLeadingZero(Nat32.fromNat(n));
     let STEPS = (bits + NBITS - 1) / NBITS;
 
-    if (STEPS > 5) {
-      VarArray.sortInPlace(array, func(x, y) = Nat32.compare(key(x), key(y)));
+    if (STEPS > 3) {
+      BucketSortInternal.mergeSort(array, key);
       return;
     };
 
