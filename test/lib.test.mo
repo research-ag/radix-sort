@@ -9,7 +9,8 @@ import Array "mo:core/Array";
 
 import { bucketSort } "../src/private/bucket";
 import { insertionSortSmall } "../src/private/insertion";
-import { mergeSort; mergeSort16 } "../src/private/merge";
+import { mergeSort } "../src/private/merge";
+import { mergeSort16 } "../src/private/merge16";
 
 func testOnArray(array : [var (Nat32, Nat)], f : [var (Nat32, Nat)] -> ()) {
   let a = VarArray.clone(array);
@@ -55,6 +56,7 @@ func testMergeSort16(n : Nat) {
         func(x, _) = x,
         0 : Nat32,
         Nat32.fromNat(n),
+        true
       );
       for (i in buffer.keys()) {
         buffer[i] := dest[i];
