@@ -52,11 +52,8 @@ module {
   ) {
     let n = to - from;
     debug assert n > 16;
+    debug assert bits < 32;
     let dest = if (not odd) array else buffer;
-    if (bits >= 32) {
-      if (odd) copy(array, buffer, from, to);
-      return;
-    };
 
     let fullLength = n == Nat32.fromNat(array.size());
 
@@ -673,7 +670,13 @@ module {
             mergeSort16(buffer, array, key, newFrom, newTo);
             if (odd) copy(array, buffer, newFrom, newTo);
           } else {
-            bucketSortRecursive(radixBits, buffer, array, key, newFrom, newTo, bits + BITS_ADD, not odd);
+            let newBits = bits + BITS_ADD;
+            if (newBits >= 32) {
+              // no sort bits left, all keys in bucket are equal
+              if (not odd) copy(buffer, array, from, to);
+            } else {
+              bucketSortRecursive(radixBits, buffer, array, key, newFrom, newTo, newBits, not odd);
+            };
           };
         };
       };
