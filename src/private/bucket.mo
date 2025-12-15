@@ -21,14 +21,14 @@ module {
     };
 
     // sort 8 < n <= 16 with merge sort
-    let buffer = VarArray.repeat(array[0], nat(n));
     if (n <= 16) {
+      let buffer = VarArray.repeat(array[0], nat(n / 2));
       mergeSort16(array, buffer, key, 0 : Nat32, n, false);
-      // TODO: with a different mergeSort16 the buffer could be smaller here
       return;
     };
 
     // sort n > 16 with bucket sort
+    let buffer = VarArray.repeat(array[0], nat(n));
     let bits : Nat32 = switch (maxInclusive) {
       case (null) 0;
       case (?x) {

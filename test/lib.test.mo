@@ -45,22 +45,35 @@ func testSort(n : Nat, mod : Nat64, sort : ([var (Nat32, Nat)], Nat32) -> ()) {
 };
 
 func testMergeSort16(n : Nat) {
-  let dest = VarArray.repeat<(Nat32, Nat)>((0, 0), n);
+  let buffer = VarArray.repeat<(Nat32, Nat)>((0, 0), n / 2);
   testSort(
     n,
     2 ** 32,
-    func(buffer, _) {
+    func(array, _) {
       mergeSort16(
+        array,
         buffer,
-        dest,
+        func(x, _) = x,
+        0 : Nat32,
+        Nat32.fromNat(n),
+        false
+      );
+    },
+  );
+  let bufferLong = VarArray.repeat<(Nat32, Nat)>((0, 0), n);
+    testSort(
+    n,
+    2 ** 32,
+    func(array, _) {
+      mergeSort16(
+        array,
+        bufferLong,
         func(x, _) = x,
         0 : Nat32,
         Nat32.fromNat(n),
         true
       );
-      for (i in buffer.keys()) {
-        buffer[i] := dest[i];
-      };
+      for (i in array.keys()) array[i] := bufferLong[i];
     },
   );
 };
@@ -140,6 +153,8 @@ func tests() {
     4,
     8,
     10,
+    12,
+    16,
     100,
     1000,
     10_000,

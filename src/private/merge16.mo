@@ -42,13 +42,13 @@ module {
   // if move == false: sort in place in array
   // array and buffer must not be identical
   public func mergeSort16<T>(array : [var T], buffer : [var T], key : T -> Nat32, from : Nat32, to : Nat32, move : Bool) {
-    let size = to - from;
+    let size = to -% from;
+    debug assert from < to;
     debug assert size > 8;
     debug assert size <= 16;
     let len1 = size / 2;
-    let len2 = size - len1;
-
-    let mid = from + len1;
+    let len2 = size -% len1;
+    let mid = from +% len1;
 
     if (move) {
       insertionSortSmall(array, array, key, from, len1);
