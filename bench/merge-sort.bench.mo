@@ -9,7 +9,8 @@ import Option "mo:core/Option";
 import Text "mo:core/Text";
 import Prim "mo:prim";
 import Sort "../src/Nat32Key";
-import { mergeSort; mergeSort16 } "../src/private/merge";
+import { mergeSort } "../src/private/merge";
+import { mergeSort16 } "../src/private/merge16";
 
 module {
   public func init() : Bench.Bench {
@@ -75,10 +76,10 @@ module {
                 func i = i,
                 0 : Nat32,
                 Nat32.fromNat(n),
+                true
               );
             };
           };
-//          case ("merge16") for (a in arrays[1][ci].vals()) mergeSort16(a, func i = i);
           case ("bucket") for (a in arrays[2][ci].vals()) Sort.bucketSort(a, func i = i, null);
           case ("radix") for (a in arrays[3][ci].vals()) Sort.radixSort(a, func i = i, null);
           case ("var-array") for (a in arrays[4][ci].vals()) VarArray.sortInPlace(a, Nat32.compare);

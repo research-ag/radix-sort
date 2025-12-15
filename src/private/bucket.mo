@@ -1,7 +1,7 @@
 import VarArray "mo:core/VarArray";
 import Nat32 "mo:core/Nat32";
 import { insertionSortSmall } "./insertion";
-import { mergeSort16 } "./merge";
+import { mergeSort16 } "./merge16";
 import { copy } "./utils";
 
 module {
@@ -23,8 +23,8 @@ module {
     // sort 8 < n <= 16 with merge sort
     let buffer = VarArray.repeat(array[0], n);
     if (n <= 16) {
-      mergeSort16(array, buffer, key, 0 : Nat32, Nat32.fromNat(n));
-      copy(buffer, array, 0 : Nat32, Nat32.fromNat(n));
+      mergeSort16(array, buffer, key, 0 : Nat32, Nat32.fromNat(n), false);
+      // TODO: with a different mergeSort16 the buffer could be smaller here
       return;
     };
 
@@ -667,8 +667,7 @@ module {
         };
         case (len) {
           if (len <= 16) {
-            mergeSort16(buffer, array, key, newFrom, newTo);
-            if (odd) copy(array, buffer, newFrom, newTo);
+            mergeSort16(buffer, array, key, newFrom, newTo, not odd);
           } else {
             let newBits = bits + BITS_ADD;
             if (newBits >= 32) {

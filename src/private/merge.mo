@@ -8,6 +8,8 @@ module {
 
   // should be from < mid < to
   func merge<T>(array : [var T], buffer : [var T], key : T -> Nat32, from : Nat32, mid : Nat32, to : Nat32) {
+    debug assert from < mid;
+    debug assert mid < to;
     var pos = from;
     var i = from;
     var j = mid;
@@ -45,20 +47,6 @@ module {
         };
       };
     };
-  };
-
-  // should be 8 < size <= 16
-  public func mergeSort16<T>(buffer : [var T], dest : [var T], key : T -> Nat32, from : Nat32, to : Nat32) {
-    let size = to - from;
-    let len1 = size / 2;
-    let len2 = size - len1;
-
-    let mid = from + len1;
-
-    insertionSortSmall(buffer, buffer, key, from, len1);
-    insertionSortSmall(buffer, buffer, key, mid, len2);
-
-    merge(buffer, dest, key, from, mid, to);
   };
 
   public func mergeSort<T>(array : [var T], key : T -> Nat32) {
