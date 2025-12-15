@@ -22,7 +22,7 @@ module {
 
     // sort 8 < n <= 16 with merge sort
     if (n <= 16) {
-      let buffer = VarArray.repeat(array[0], nat(n >> 1));
+      let buffer = VarArray.repeat(array[0], nat(n / 2));
       mergeSort16(array, buffer, key, 0 : Nat32, n, false);
       return;
     };
