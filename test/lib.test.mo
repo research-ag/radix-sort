@@ -10,7 +10,7 @@ import VarArray "mo:core/VarArray";
 import { bucketSort } "../src/private/bucket";
 import { insertionSortSmall } "../src/private/insertion";
 import { mergeSort } "../src/private/merge";
-import { mergeSort16 } "../src/private/merge16";
+import { mergeSort20 } "../src/private/merge20";
 
 func testOnArray(array : [var (Nat32, Nat)], f : [var (Nat32, Nat)] -> ()) {
   let a = VarArray.clone(array);
@@ -44,13 +44,13 @@ func testSort(n : Nat, mod : Nat64, sort : ([var (Nat32, Nat)], Nat32) -> ()) {
   };
 };
 
-func testMergeSort16(n : Nat) {
+func testMergeSort20(n : Nat) {
   let buffer = VarArray.repeat<(Nat32, Nat)>((0, 0), n / 2);
   testSort(
     n,
     2 ** 32,
     func(array, _) {
-      mergeSort16(
+      mergeSort20(
         array,
         buffer,
         func(x, _) = x,
@@ -65,7 +65,7 @@ func testMergeSort16(n : Nat) {
     n,
     2 ** 32,
     func(array, _) {
-      mergeSort16(
+      mergeSort20(
         array,
         bufferLong,
         func(x, _) = x,
@@ -138,12 +138,12 @@ func testInsertionSortSmall(n : Nat) {
 };
 
 func tests() {
-  for (n in Nat.range(2, 8)) {
+  for (n in Nat.range(1, 10)) {
     testInsertionSortSmall(n);
   };
 
-  for (n in Nat.range(9, 17)) {
-    testMergeSort16(n);
+  for (n in Nat.range(11, 20)) {
+    testMergeSort20(n);
   };
 
   let ns = [

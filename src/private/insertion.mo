@@ -3,7 +3,7 @@ import Prim "mo:⛔";
 module {
   let nat = Prim.nat32ToNat;
 
-  // Must have: len <= 8
+  // Must have: len <= 10
   // Use dest = buffer when sorting in place
   public func insertionSortSmall<T>(buffer : [var T], dest : [var T], key : T -> Nat32, newFrom : Nat32, len : Nat32) {
     debug assert len > 0;
@@ -557,7 +557,436 @@ module {
         dest[index6] := t6;
         dest[index7] := t7;
       };
-      case (_) Prim.trap("insertionSortSmall for len > 8 is not implemented.");
+      case (9) {
+        let index0 = nat(newFrom);
+        let index1 = nat(newFrom +% 1);
+        let index2 = nat(newFrom +% 2);
+        let index3 = nat(newFrom +% 3);
+        let index4 = nat(newFrom +% 4);
+        let index5 = nat(newFrom +% 5);
+        let index6 = nat(newFrom +% 6);
+        let index7 = nat(newFrom +% 7);
+        let index8 = nat(newFrom +% 8);
+        var t0 = buffer[index0];
+        var k0 = key(t0);
+        var t1 = buffer[index1];
+        var k1 = key(t1);
+        var t2 = buffer[index2];
+        var k2 = key(t2);
+        var t3 = buffer[index3];
+        var k3 = key(t3);
+        var t4 = buffer[index4];
+        var k4 = key(t4);
+        var t5 = buffer[index5];
+        var k5 = key(t5);
+        var t6 = buffer[index6];
+        var k6 = key(t6);
+        var t7 = buffer[index7];
+        var k7 = key(t7);
+        var t8 = buffer[index8];
+        var k8 = key(t8);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+        tv := t3;
+        kv := k3;
+        if (kv < k2) {
+          t3 := t2;
+          k3 := k2;
+          if (kv < k1) {
+            t2 := t1;
+            k2 := k1;
+            if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              t1 := tv;
+              k1 := kv;
+            };
+          } else { t2 := tv; k2 := kv };
+        };
+        tv := t4;
+        kv := k4;
+        if (kv < k3) {
+          t4 := t3;
+          k4 := k3;
+          if (kv < k2) {
+            t3 := t2;
+            k3 := k2;
+            if (kv < k1) {
+              t2 := t1;
+              k2 := k1;
+              if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                t1 := tv;
+                k1 := kv;
+              };
+            } else { t2 := tv; k2 := kv };
+          } else { t3 := tv; k3 := kv };
+        };
+        tv := t5;
+        kv := k5;
+        if (kv < k4) {
+          t5 := t4;
+          k5 := k4;
+          if (kv < k3) {
+            t4 := t3;
+            k4 := k3;
+            if (kv < k2) {
+              t3 := t2;
+              k3 := k2;
+              if (kv < k1) {
+                t2 := t1;
+                k2 := k1;
+                if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                  t1 := tv;
+                  k1 := kv;
+                };
+              } else { t2 := tv; k2 := kv };
+            } else { t3 := tv; k3 := kv };
+          } else { t4 := tv; k4 := kv };
+        };
+        tv := t6;
+        kv := k6;
+        if (kv < k5) {
+          t6 := t5;
+          k6 := k5;
+          if (kv < k4) {
+            t5 := t4;
+            k5 := k4;
+            if (kv < k3) {
+              t4 := t3;
+              k4 := k3;
+              if (kv < k2) {
+                t3 := t2;
+                k3 := k2;
+                if (kv < k1) {
+                  t2 := t1;
+                  k2 := k1;
+                  if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                    t1 := tv;
+                    k1 := kv;
+                  };
+                } else { t2 := tv; k2 := kv };
+              } else { t3 := tv; k3 := kv };
+            } else { t4 := tv; k4 := kv };
+          } else { t5 := tv; k5 := kv };
+        };
+        tv := t7;
+        kv := k7;
+        if (kv < k6) {
+          t7 := t6;
+          k7 := k6;
+          if (kv < k5) {
+            t6 := t5;
+            k6 := k5;
+            if (kv < k4) {
+              t5 := t4;
+              k5 := k4;
+              if (kv < k3) {
+                t4 := t3;
+                k4 := k3;
+                if (kv < k2) {
+                  t3 := t2;
+                  k3 := k2;
+                  if (kv < k1) {
+                    t2 := t1;
+                    k2 := k1;
+                    if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                      t1 := tv;
+                      k1 := kv;
+                    };
+                  } else { t2 := tv; k2 := kv };
+                } else { t3 := tv; k3 := kv };
+              } else { t4 := tv; k4 := kv };
+            } else { t5 := tv; k5 := kv };
+          } else { t6 := tv; k6 := kv };
+        };
+        tv := t8;
+        kv := k8;
+        if (kv < k7) {
+          t8 := t7;
+          if (kv < k6) {
+            t7 := t6;
+            if (kv < k5) {
+              t6 := t5;
+              if (kv < k4) {
+                t5 := t4;
+                if (kv < k3) {
+                  t4 := t3;
+                  if (kv < k2) {
+                    t3 := t2;
+                    if (kv < k1) {
+                      t2 := t1;
+                      if (kv < k0) { t1 := t0; t0 := tv } else {
+                        t1 := tv;
+                      };
+                    } else { t2 := tv };
+                  } else { t3 := tv };
+                } else { t4 := tv };
+              } else { t5 := tv };
+            } else { t6 := tv };
+          } else { t7 := tv };
+        };
+
+        dest[index0] := t0;
+        dest[index1] := t1;
+        dest[index2] := t2;
+        dest[index3] := t3;
+        dest[index4] := t4;
+        dest[index5] := t5;
+        dest[index6] := t6;
+        dest[index7] := t7;
+        dest[index8] := t8;
+      };
+      case (10) {
+        let index0 = nat(newFrom);
+        let index1 = nat(newFrom +% 1);
+        let index2 = nat(newFrom +% 2);
+        let index3 = nat(newFrom +% 3);
+        let index4 = nat(newFrom +% 4);
+        let index5 = nat(newFrom +% 5);
+        let index6 = nat(newFrom +% 6);
+        let index7 = nat(newFrom +% 7);
+        let index8 = nat(newFrom +% 8);
+        let index9 = nat(newFrom +% 9);
+        var t0 = buffer[index0];
+        var k0 = key(t0);
+        var t1 = buffer[index1];
+        var k1 = key(t1);
+        var t2 = buffer[index2];
+        var k2 = key(t2);
+        var t3 = buffer[index3];
+        var k3 = key(t3);
+        var t4 = buffer[index4];
+        var k4 = key(t4);
+        var t5 = buffer[index5];
+        var k5 = key(t5);
+        var t6 = buffer[index6];
+        var k6 = key(t6);
+        var t7 = buffer[index7];
+        var k7 = key(t7);
+        var t8 = buffer[index8];
+        var k8 = key(t8);
+        var t9 = buffer[index9];
+        var k9 = key(t9);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+        tv := t3;
+        kv := k3;
+        if (kv < k2) {
+          t3 := t2;
+          k3 := k2;
+          if (kv < k1) {
+            t2 := t1;
+            k2 := k1;
+            if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              t1 := tv;
+              k1 := kv;
+            };
+          } else { t2 := tv; k2 := kv };
+        };
+        tv := t4;
+        kv := k4;
+        if (kv < k3) {
+          t4 := t3;
+          k4 := k3;
+          if (kv < k2) {
+            t3 := t2;
+            k3 := k2;
+            if (kv < k1) {
+              t2 := t1;
+              k2 := k1;
+              if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                t1 := tv;
+                k1 := kv;
+              };
+            } else { t2 := tv; k2 := kv };
+          } else { t3 := tv; k3 := kv };
+        };
+        tv := t5;
+        kv := k5;
+        if (kv < k4) {
+          t5 := t4;
+          k5 := k4;
+          if (kv < k3) {
+            t4 := t3;
+            k4 := k3;
+            if (kv < k2) {
+              t3 := t2;
+              k3 := k2;
+              if (kv < k1) {
+                t2 := t1;
+                k2 := k1;
+                if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                  t1 := tv;
+                  k1 := kv;
+                };
+              } else { t2 := tv; k2 := kv };
+            } else { t3 := tv; k3 := kv };
+          } else { t4 := tv; k4 := kv };
+        };
+        tv := t6;
+        kv := k6;
+        if (kv < k5) {
+          t6 := t5;
+          k6 := k5;
+          if (kv < k4) {
+            t5 := t4;
+            k5 := k4;
+            if (kv < k3) {
+              t4 := t3;
+              k4 := k3;
+              if (kv < k2) {
+                t3 := t2;
+                k3 := k2;
+                if (kv < k1) {
+                  t2 := t1;
+                  k2 := k1;
+                  if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                    t1 := tv;
+                    k1 := kv;
+                  };
+                } else { t2 := tv; k2 := kv };
+              } else { t3 := tv; k3 := kv };
+            } else { t4 := tv; k4 := kv };
+          } else { t5 := tv; k5 := kv };
+        };
+        tv := t7;
+        kv := k7;
+        if (kv < k6) {
+          t7 := t6;
+          k7 := k6;
+          if (kv < k5) {
+            t6 := t5;
+            k6 := k5;
+            if (kv < k4) {
+              t5 := t4;
+              k5 := k4;
+              if (kv < k3) {
+                t4 := t3;
+                k4 := k3;
+                if (kv < k2) {
+                  t3 := t2;
+                  k3 := k2;
+                  if (kv < k1) {
+                    t2 := t1;
+                    k2 := k1;
+                    if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                      t1 := tv;
+                      k1 := kv;
+                    };
+                  } else { t2 := tv; k2 := kv };
+                } else { t3 := tv; k3 := kv };
+              } else { t4 := tv; k4 := kv };
+            } else { t5 := tv; k5 := kv };
+          } else { t6 := tv; k6 := kv };
+        };
+        tv := t8;
+        kv := k8;
+        if (kv < k7) {
+          t8 := t7;
+          k8 := k7;
+          if (kv < k6) {
+            t7 := t6;
+            k7 := k6;
+            if (kv < k5) {
+              t6 := t5;
+              k6 := k5;
+              if (kv < k4) {
+                t5 := t4;
+                k5 := k4;
+                if (kv < k3) {
+                  t4 := t3;
+                  k4 := k3;
+                  if (kv < k2) {
+                    t3 := t2;
+                    k3 := k2;
+                    if (kv < k1) {
+                      t2 := t1;
+                      k2 := k1;
+                      if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                        t1 := tv;
+                        k1 := kv;
+                      };
+                    } else { t2 := tv; k2 := kv };
+                  } else { t3 := tv; k3 := kv };
+                } else { t4 := tv; k4 := kv };
+              } else { t5 := tv; k5 := kv };
+            } else { t6 := tv; k6 := kv };
+          } else { t7 := tv; k7 := kv };
+        };
+        tv := t9;
+        kv := k9;
+        if (kv < k8) {
+          t9 := t8;
+          if (kv < k7) {
+            t8 := t7;
+            if (kv < k6) {
+              t7 := t6;
+              if (kv < k5) {
+                t6 := t5;
+                if (kv < k4) {
+                  t5 := t4;
+                  if (kv < k3) {
+                    t4 := t3;
+                    if (kv < k2) {
+                      t3 := t2;
+                      if (kv < k1) {
+                        t2 := t1;
+                        if (kv < k0) { t1 := t0; t0 := tv } else {
+                          t1 := tv;
+                        };
+                      } else { t2 := tv };
+                    } else { t3 := tv };
+                  } else { t4 := tv };
+                } else { t5 := tv };
+              } else { t6 := tv };
+            } else { t7 := tv };
+          } else { t8 := tv };
+        };
+
+        dest[index0] := t0;
+        dest[index1] := t1;
+        dest[index2] := t2;
+        dest[index3] := t3;
+        dest[index4] := t4;
+        dest[index5] := t5;
+        dest[index6] := t6;
+        dest[index7] := t7;
+        dest[index8] := t8;
+        dest[index9] := t9;
+      };
+      case (_) Prim.trap("insertionSortSmall for len > 10 is not implemented.");
     };
   };
 
@@ -1078,7 +1507,417 @@ module {
         dest[nat(offset +% 6)] := t6;
         dest[nat(offset +% 7)] := t7;
       };
-      case (_) Prim.trap("insertionSortSmall for len > 8 is not implemented.");
+      case (9) {
+        var t0 = buffer[nat(newFrom)];
+        var k0 = key(t0);
+        var t1 = buffer[nat(newFrom +% 1)];
+        var k1 = key(t1);
+        var t2 = buffer[nat(newFrom +% 2)];
+        var k2 = key(t2);
+        var t3 = buffer[nat(newFrom +% 3)];
+        var k3 = key(t3);
+        var t4 = buffer[nat(newFrom +% 4)];
+        var k4 = key(t4);
+        var t5 = buffer[nat(newFrom +% 5)];
+        var k5 = key(t5);
+        var t6 = buffer[nat(newFrom +% 6)];
+        var k6 = key(t6);
+        var t7 = buffer[nat(newFrom +% 7)];
+        var k7 = key(t7);
+        var t8 = buffer[nat(newFrom +% 8)];
+        var k8 = key(t8);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+        tv := t3;
+        kv := k3;
+        if (kv < k2) {
+          t3 := t2;
+          k3 := k2;
+          if (kv < k1) {
+            t2 := t1;
+            k2 := k1;
+            if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              t1 := tv;
+              k1 := kv;
+            };
+          } else { t2 := tv; k2 := kv };
+        };
+        tv := t4;
+        kv := k4;
+        if (kv < k3) {
+          t4 := t3;
+          k4 := k3;
+          if (kv < k2) {
+            t3 := t2;
+            k3 := k2;
+            if (kv < k1) {
+              t2 := t1;
+              k2 := k1;
+              if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                t1 := tv;
+                k1 := kv;
+              };
+            } else { t2 := tv; k2 := kv };
+          } else { t3 := tv; k3 := kv };
+        };
+        tv := t5;
+        kv := k5;
+        if (kv < k4) {
+          t5 := t4;
+          k5 := k4;
+          if (kv < k3) {
+            t4 := t3;
+            k4 := k3;
+            if (kv < k2) {
+              t3 := t2;
+              k3 := k2;
+              if (kv < k1) {
+                t2 := t1;
+                k2 := k1;
+                if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                  t1 := tv;
+                  k1 := kv;
+                };
+              } else { t2 := tv; k2 := kv };
+            } else { t3 := tv; k3 := kv };
+          } else { t4 := tv; k4 := kv };
+        };
+        tv := t6;
+        kv := k6;
+        if (kv < k5) {
+          t6 := t5;
+          k6 := k5;
+          if (kv < k4) {
+            t5 := t4;
+            k5 := k4;
+            if (kv < k3) {
+              t4 := t3;
+              k4 := k3;
+              if (kv < k2) {
+                t3 := t2;
+                k3 := k2;
+                if (kv < k1) {
+                  t2 := t1;
+                  k2 := k1;
+                  if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                    t1 := tv;
+                    k1 := kv;
+                  };
+                } else { t2 := tv; k2 := kv };
+              } else { t3 := tv; k3 := kv };
+            } else { t4 := tv; k4 := kv };
+          } else { t5 := tv; k5 := kv };
+        };
+        tv := t7;
+        kv := k7;
+        if (kv < k6) {
+          t7 := t6;
+          k7 := k6;
+          if (kv < k5) {
+            t6 := t5;
+            k6 := k5;
+            if (kv < k4) {
+              t5 := t4;
+              k5 := k4;
+              if (kv < k3) {
+                t4 := t3;
+                k4 := k3;
+                if (kv < k2) {
+                  t3 := t2;
+                  k3 := k2;
+                  if (kv < k1) {
+                    t2 := t1;
+                    k2 := k1;
+                    if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                      t1 := tv;
+                      k1 := kv;
+                    };
+                  } else { t2 := tv; k2 := kv };
+                } else { t3 := tv; k3 := kv };
+              } else { t4 := tv; k4 := kv };
+            } else { t5 := tv; k5 := kv };
+          } else { t6 := tv; k6 := kv };
+        };
+        tv := t8;
+        kv := k8;
+        if (kv < k7) {
+          t8 := t7;
+          if (kv < k6) {
+            t7 := t6;
+            if (kv < k5) {
+              t6 := t5;
+              if (kv < k4) {
+                t5 := t4;
+                if (kv < k3) {
+                  t4 := t3;
+                  if (kv < k2) {
+                    t3 := t2;
+                    if (kv < k1) {
+                      t2 := t1;
+                      if (kv < k0) { t1 := t0; t0 := tv } else {
+                        t1 := tv;
+                      };
+                    } else { t2 := tv };
+                  } else { t3 := tv };
+                } else { t4 := tv };
+              } else { t5 := tv };
+            } else { t6 := tv };
+          } else { t7 := tv };
+        };
+
+        dest[nat(offset)] := t0;
+        dest[nat(offset +% 1)] := t1;
+        dest[nat(offset +% 2)] := t2;
+        dest[nat(offset +% 3)] := t3;
+        dest[nat(offset +% 4)] := t4;
+        dest[nat(offset +% 5)] := t5;
+        dest[nat(offset +% 6)] := t6;
+        dest[nat(offset +% 7)] := t7;
+        dest[nat(offset +% 8)] := t8;
+      };
+      case (10) {
+        var t0 = buffer[nat(newFrom)];
+        var k0 = key(t0);
+        var t1 = buffer[nat(newFrom +% 1)];
+        var k1 = key(t1);
+        var t2 = buffer[nat(newFrom +% 2)];
+        var k2 = key(t2);
+        var t3 = buffer[nat(newFrom +% 3)];
+        var k3 = key(t3);
+        var t4 = buffer[nat(newFrom +% 4)];
+        var k4 = key(t4);
+        var t5 = buffer[nat(newFrom +% 5)];
+        var k5 = key(t5);
+        var t6 = buffer[nat(newFrom +% 6)];
+        var k6 = key(t6);
+        var t7 = buffer[nat(newFrom +% 7)];
+        var k7 = key(t7);
+        var t8 = buffer[nat(newFrom +% 8)];
+        var k8 = key(t8);
+        var t9 = buffer[nat(newFrom +% 9)];
+        var k9 = key(t9);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+        tv := t3;
+        kv := k3;
+        if (kv < k2) {
+          t3 := t2;
+          k3 := k2;
+          if (kv < k1) {
+            t2 := t1;
+            k2 := k1;
+            if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              t1 := tv;
+              k1 := kv;
+            };
+          } else { t2 := tv; k2 := kv };
+        };
+        tv := t4;
+        kv := k4;
+        if (kv < k3) {
+          t4 := t3;
+          k4 := k3;
+          if (kv < k2) {
+            t3 := t2;
+            k3 := k2;
+            if (kv < k1) {
+              t2 := t1;
+              k2 := k1;
+              if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                t1 := tv;
+                k1 := kv;
+              };
+            } else { t2 := tv; k2 := kv };
+          } else { t3 := tv; k3 := kv };
+        };
+        tv := t5;
+        kv := k5;
+        if (kv < k4) {
+          t5 := t4;
+          k5 := k4;
+          if (kv < k3) {
+            t4 := t3;
+            k4 := k3;
+            if (kv < k2) {
+              t3 := t2;
+              k3 := k2;
+              if (kv < k1) {
+                t2 := t1;
+                k2 := k1;
+                if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                  t1 := tv;
+                  k1 := kv;
+                };
+              } else { t2 := tv; k2 := kv };
+            } else { t3 := tv; k3 := kv };
+          } else { t4 := tv; k4 := kv };
+        };
+        tv := t6;
+        kv := k6;
+        if (kv < k5) {
+          t6 := t5;
+          k6 := k5;
+          if (kv < k4) {
+            t5 := t4;
+            k5 := k4;
+            if (kv < k3) {
+              t4 := t3;
+              k4 := k3;
+              if (kv < k2) {
+                t3 := t2;
+                k3 := k2;
+                if (kv < k1) {
+                  t2 := t1;
+                  k2 := k1;
+                  if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                    t1 := tv;
+                    k1 := kv;
+                  };
+                } else { t2 := tv; k2 := kv };
+              } else { t3 := tv; k3 := kv };
+            } else { t4 := tv; k4 := kv };
+          } else { t5 := tv; k5 := kv };
+        };
+        tv := t7;
+        kv := k7;
+        if (kv < k6) {
+          t7 := t6;
+          k7 := k6;
+          if (kv < k5) {
+            t6 := t5;
+            k6 := k5;
+            if (kv < k4) {
+              t5 := t4;
+              k5 := k4;
+              if (kv < k3) {
+                t4 := t3;
+                k4 := k3;
+                if (kv < k2) {
+                  t3 := t2;
+                  k3 := k2;
+                  if (kv < k1) {
+                    t2 := t1;
+                    k2 := k1;
+                    if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                      t1 := tv;
+                      k1 := kv;
+                    };
+                  } else { t2 := tv; k2 := kv };
+                } else { t3 := tv; k3 := kv };
+              } else { t4 := tv; k4 := kv };
+            } else { t5 := tv; k5 := kv };
+          } else { t6 := tv; k6 := kv };
+        };
+        tv := t8;
+        kv := k8;
+        if (kv < k7) {
+          t8 := t7;
+          k8 := k7;
+          if (kv < k6) {
+            t7 := t6;
+            k7 := k6;
+            if (kv < k5) {
+              t6 := t5;
+              k6 := k5;
+              if (kv < k4) {
+                t5 := t4;
+                k5 := k4;
+                if (kv < k3) {
+                  t4 := t3;
+                  k4 := k3;
+                  if (kv < k2) {
+                    t3 := t2;
+                    k3 := k2;
+                    if (kv < k1) {
+                      t2 := t1;
+                      k2 := k1;
+                      if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                        t1 := tv;
+                        k1 := kv;
+                      };
+                    } else { t2 := tv; k2 := kv };
+                  } else { t3 := tv; k3 := kv };
+                } else { t4 := tv; k4 := kv };
+              } else { t5 := tv; k5 := kv };
+            } else { t6 := tv; k6 := kv };
+          } else { t7 := tv; k7 := kv };
+        };
+        tv := t9;
+        kv := k9;
+        if (kv < k8) {
+          t9 := t8;
+          if (kv < k7) {
+            t8 := t7;
+            if (kv < k6) {
+              t7 := t6;
+              if (kv < k5) {
+                t6 := t5;
+                if (kv < k4) {
+                  t5 := t4;
+                  if (kv < k3) {
+                    t4 := t3;
+                    if (kv < k2) {
+                      t3 := t2;
+                      if (kv < k1) {
+                        t2 := t1;
+                        if (kv < k0) { t1 := t0; t0 := tv } else {
+                          t1 := tv;
+                        };
+                      } else { t2 := tv };
+                    } else { t3 := tv };
+                  } else { t4 := tv };
+                } else { t5 := tv };
+              } else { t6 := tv };
+            } else { t7 := tv };
+          } else { t8 := tv };
+        };
+
+        dest[nat(offset)] := t0;
+        dest[nat(offset +% 1)] := t1;
+        dest[nat(offset +% 2)] := t2;
+        dest[nat(offset +% 3)] := t3;
+        dest[nat(offset +% 4)] := t4;
+        dest[nat(offset +% 5)] := t5;
+        dest[nat(offset +% 6)] := t6;
+        dest[nat(offset +% 7)] := t7;
+        dest[nat(offset +% 8)] := t8;
+        dest[nat(offset +% 9)] := t9;
+      };
+      case (_) Prim.trap("insertionSortSmall for len > 10 is not implemented.");
     };
   };
 }

@@ -11,7 +11,7 @@ import Bench "mo:bench";
 
 import Sort "../src/Nat32Key";
 import { mergeSort } "../src/private/merge";
-import { mergeSort16 } "../src/private/merge16";
+import { mergeSort20 } "../src/private/merge20";
 
 module {
   public func init() : Bench.Bench {
@@ -22,15 +22,15 @@ module {
 
     let rows = [
       "merge",
-      "merge16",
+      "merge20",
       "bucket",
       "radix",
       "var-array",
     ];
     let cols = [
-      "8",
-      "12",
-      "16",
+      "10",
+      "15",
+      "20",
       "40",
       "80",
       "160",
@@ -63,15 +63,15 @@ module {
     bench.runner(
       func(row, col) {
         let ?ci = Array.indexOf<Text>(cols, Text.equal, col) else Prim.trap("Unknown column");
-        let buffer = VarArray.repeat<Nat32>(0, 16);
+        let buffer = VarArray.repeat<Nat32>(0, 20);
         switch (row) {
           case ("merge") for (a in arrays[0][ci].vals()) mergeSort(a, func i = i);
-          case ("merge16") {
+          case ("merge20") {
             let input = arrays[1][ci]; 
             let n = input[0].size();
-            if (8 < n and n <= 16) { 
+            if (10 < n and n <= 20) { 
               for (a in input.vals())
-              mergeSort16<Nat32>(
+              mergeSort20<Nat32>(
                 a,
                 buffer,
                 func i = i,

@@ -5,6 +5,7 @@ import Prim "mo:⛔";
 import Bucket "private/bucket";
 import { insertionSortSmall } "private/insertion";
 import Merge "private/merge";
+import { mergeSort20 } "private/merge20";
 
 /// This module provides implementations of radix sort and bucket sort for sorting arrays of elements.
 /// The sorts are based on a key function that maps elements to `Nat32` values.
@@ -112,13 +113,25 @@ module {
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
   public func radixSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32) {
-    let n = array.size();
+    let n = Nat32.fromNat(array.size());
+
+    // n <= 1 is already sorted
     if (n <= 1) return;
-    if (n <= 8) {
-      insertionSortSmall(array, array, key, 0 : Nat32, Nat32.fromNat(n));
+
+    // sort n <= 10 with insertion sort
+    if (n <= 10) {
+      insertionSortSmall(array, array, key, 0 : Nat32, n);
       return;
     };
 
+    // sort 10 < n <= 20 with merge sort
+    if (n <= 20) {
+      let buffer = VarArray.repeat(array[0], nat(n / 2));
+      mergeSort20(array, buffer, key, 0 : Nat32, n, false);
+      return;
+    };
+
+    // sort n > 20 with radix sort
     let bits : Nat32 = 32 - (
       switch (maxInclusive) {
         case (null) 0;
@@ -129,7 +142,7 @@ module {
       }
     );
 
-    let NBITS = 31 - Nat32.bitcountLeadingZero(Nat32.fromNat(n));
+    let NBITS = 31 - Nat32.bitcountLeadingZero(n);
     let STEPS = (bits + NBITS - 1) / NBITS;
 
     if (STEPS > 3) {
@@ -141,7 +154,7 @@ module {
     let RADIX = 1 << RADIX_BITS;
     let MASK = RADIX -% 1;
 
-    let buffer = VarArray.repeat<T>(array[0], n);
+    let buffer = VarArray.repeat<T>(array[0], nat(n));
     let counts = VarArray.repeat<Nat32>(0, nat(RADIX));
 
     for (step in Nat32.range(0, STEPS)) {
