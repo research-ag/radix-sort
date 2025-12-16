@@ -1,6 +1,5 @@
 import VarArray "mo:core/VarArray";
 import Nat32 "mo:core/Nat32";
-import Debug "mo:core/Debug";
 import { insertionSortSmall; insertionSortSmallMove } "./insertion";
 
 module {
@@ -28,7 +27,7 @@ module {
     from : Nat32,
     to : Nat32,
     even : Bool,
-    offset : Nat32
+    offset : Nat32,
   ) {
     debug assert from < to;
     let size = to -% from;
@@ -45,11 +44,13 @@ module {
 
     let len1 = size / 2;
     let mid = from +% len1;
-    if (even) { // merge to array in place
+    if (even) {
+      // merge to array in place
       mergeSortRec(array, buffer, key, mid, to, true, 0 : Nat32); // sort upper half to array in place
       mergeSortRec(array, buffer, key, from, mid, false, 0 : Nat32); // sort lower half to beginning of buffer
-      merge1(array, buffer, key, from, mid, to); // merge to array in place 
-    } else { // merge to buffer at offset
+      merge1(array, buffer, key, from, mid, to); // merge to array in place
+    } else {
+      // merge to buffer at offset
       mergeSortRec(array, buffer, key, from, mid, true, 0 : Nat32); // lower half to array in place
       mergeSortRec(array, buffer, key, mid, to, false, offset +% len1); // sort upper half to buffer starting shifted offset
       merge2(array, buffer, key, from, mid, size, offset); // merge to buffer at offset
@@ -88,8 +89,8 @@ module {
         jElem := array[nat(j)];
       };
     };
-  };   
-  
+  };
+
   func merge2<T>(array : [var T], buffer : [var T], key : T -> Nat32, from : Nat32, mid : Nat32, size : Nat32, offset : Nat32) {
     debug assert from < mid;
     debug assert mid < from +% size;
@@ -123,5 +124,5 @@ module {
         jElem := buffer[nat(j)];
       };
     };
- }; 
+  };
 };

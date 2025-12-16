@@ -567,14 +567,11 @@ module {
     debug assert len > 0;
     switch (len) {
       case (1) {
-        let index0 = nat(newFrom);
-        dest[nat(offset)] := buffer[index0];
+        dest[nat(offset)] := buffer[nat(newFrom)];
       };
       case (2) {
-        let index0 = nat(newFrom);
-        let index1 = nat(newFrom +% 1);
-        let t0 = buffer[index0];
-        let t1 = buffer[index1];
+        let t0 = buffer[nat(newFrom)];
+        let t1 = buffer[nat(newFrom +% 1)];
         if (key(t1) < key(t0)) {
           dest[nat(offset)] := t1;
           dest[nat(offset +% 1)] := t0;
@@ -584,14 +581,11 @@ module {
         };
       };
       case (3) {
-        let index0 = nat(newFrom);
-        let index1 = nat(newFrom +% 1);
-        let index2 = nat(newFrom +% 2);
-        var t0 = buffer[index0];
+        var t0 = buffer[nat(newFrom)];
         var k0 = key(t0);
-        var t1 = buffer[index1];
+        var t1 = buffer[nat(newFrom +% 1)];
         var k1 = key(t1);
-        let t2 = buffer[index2];
+        let t2 = buffer[nat(newFrom +% 2)];
         let k2 = key(t2);
 
         if (k1 < k0) {
@@ -620,17 +614,13 @@ module {
         };
       };
       case (4) {
-        let index0 = nat(newFrom);
-        let index1 = nat(newFrom +% 1);
-        let index2 = nat(newFrom +% 2);
-        let index3 = nat(newFrom +% 3);
-        var t0 = buffer[index0];
+        var t0 = buffer[nat(newFrom)];
         var k0 = key(t0);
-        var t1 = buffer[index1];
+        var t1 = buffer[nat(newFrom +% 1)];
         var k1 = key(t1);
-        var t2 = buffer[index2];
+        var t2 = buffer[nat(newFrom +% 2)];
         var k2 = key(t2);
-        var t3 = buffer[index3];
+        var t3 = buffer[nat(newFrom +% 3)];
         var k3 = key(t3);
 
         if (k1 < k0) {
@@ -670,20 +660,15 @@ module {
         dest[nat(offset +% 3)] := t3;
       };
       case (5) {
-        let index0 = nat(newFrom);
-        let index1 = nat(newFrom +% 1);
-        let index2 = nat(newFrom +% 2);
-        let index3 = nat(newFrom +% 3);
-        let index4 = nat(newFrom +% 4);
-        var t0 = buffer[index0];
+        var t0 = buffer[nat(newFrom)];
         var k0 = key(t0);
-        var t1 = buffer[index1];
+        var t1 = buffer[nat(newFrom +% 1)];
         var k1 = key(t1);
-        var t2 = buffer[index2];
+        var t2 = buffer[nat(newFrom +% 2)];
         var k2 = key(t2);
-        var t3 = buffer[index3];
+        var t3 = buffer[nat(newFrom +% 3)];
         var k3 = key(t3);
-        var t4 = buffer[index4];
+        var t4 = buffer[nat(newFrom +% 4)];
         var k4 = key(t4);
 
         if (k1 < k0) {
@@ -740,23 +725,17 @@ module {
         dest[nat(offset +% 4)] := t4;
       };
       case (6) {
-        let index0 = nat(newFrom);
-        let index1 = nat(newFrom +% 1);
-        let index2 = nat(newFrom +% 2);
-        let index3 = nat(newFrom +% 3);
-        let index4 = nat(newFrom +% 4);
-        let index5 = nat(newFrom +% 5);
-        var t0 = buffer[index0];
+        var t0 = buffer[nat(newFrom)];
         var k0 = key(t0);
-        var t1 = buffer[index1];
+        var t1 = buffer[nat(newFrom +% 1)];
         var k1 = key(t1);
-        var t2 = buffer[index2];
+        var t2 = buffer[nat(newFrom +% 2)];
         var k2 = key(t2);
-        var t3 = buffer[index3];
+        var t3 = buffer[nat(newFrom +% 3)];
         var k3 = key(t3);
-        var t4 = buffer[index4];
+        var t4 = buffer[nat(newFrom +% 4)];
         var k4 = key(t4);
-        var t5 = buffer[index5];
+        var t5 = buffer[nat(newFrom +% 5)];
         var k5 = key(t5);
 
         if (k1 < k0) {
@@ -835,26 +814,19 @@ module {
         dest[nat(offset +% 5)] := t5;
       };
       case (7) {
-        let index0 = nat(newFrom);
-        let index1 = nat(newFrom +% 1);
-        let index2 = nat(newFrom +% 2);
-        let index3 = nat(newFrom +% 3);
-        let index4 = nat(newFrom +% 4);
-        let index5 = nat(newFrom +% 5);
-        let index6 = nat(newFrom +% 6);
-        var t0 = buffer[index0];
+        var t0 = buffer[nat(newFrom)];
         var k0 = key(t0);
-        var t1 = buffer[index1];
+        var t1 = buffer[nat(newFrom +% 1)];
         var k1 = key(t1);
-        var t2 = buffer[index2];
+        var t2 = buffer[nat(newFrom +% 2)];
         var k2 = key(t2);
-        var t3 = buffer[index3];
+        var t3 = buffer[nat(newFrom +% 3)];
         var k3 = key(t3);
-        var t4 = buffer[index4];
+        var t4 = buffer[nat(newFrom +% 4)];
         var k4 = key(t4);
-        var t5 = buffer[index5];
+        var t5 = buffer[nat(newFrom +% 5)];
         var k5 = key(t5);
-        var t6 = buffer[index6];
+        var t6 = buffer[nat(newFrom +% 6)];
         var k6 = key(t6);
 
         if (k1 < k0) {
@@ -959,29 +931,21 @@ module {
         dest[nat(offset +% 6)] := t6;
       };
       case (8) {
-        let index0 = nat(newFrom);
-        let index1 = nat(newFrom +% 1);
-        let index2 = nat(newFrom +% 2);
-        let index3 = nat(newFrom +% 3);
-        let index4 = nat(newFrom +% 4);
-        let index5 = nat(newFrom +% 5);
-        let index6 = nat(newFrom +% 6);
-        let index7 = nat(newFrom +% 7);
-        var t0 = buffer[index0];
+        var t0 = buffer[nat(newFrom)];
         var k0 = key(t0);
-        var t1 = buffer[index1];
+        var t1 = buffer[nat(newFrom +% 1)];
         var k1 = key(t1);
-        var t2 = buffer[index2];
+        var t2 = buffer[nat(newFrom +% 2)];
         var k2 = key(t2);
-        var t3 = buffer[index3];
+        var t3 = buffer[nat(newFrom +% 3)];
         var k3 = key(t3);
-        var t4 = buffer[index4];
+        var t4 = buffer[nat(newFrom +% 4)];
         var k4 = key(t4);
-        var t5 = buffer[index5];
+        var t5 = buffer[nat(newFrom +% 5)];
         var k5 = key(t5);
-        var t6 = buffer[index6];
+        var t6 = buffer[nat(newFrom +% 6)];
         var k6 = key(t6);
-        var t7 = buffer[index7];
+        var t7 = buffer[nat(newFrom +% 7)];
         var k7 = key(t7);
 
         if (k1 < k0) {

@@ -9,6 +9,35 @@ import Merge "private/merge";
 module {
   let nat = Nat32.toNat;
 
+  /// Sorts an array in place using merge sort.
+  ///
+  /// Max `n` value id `2 ** 32 - 1`.
+  ///
+  /// Example:
+  /// ```motoko
+  /// import Sort "mo:sort/Nat32Key";
+  /// import Array "mo:core/Array";
+  /// import VarArray "mo:core/VarArray";
+  ///
+  /// // Example with a custom type
+  /// type User = {
+  ///   id : Nat32;
+  ///   name : Text;
+  /// };
+  ///
+  /// let users : [var User] = [var
+  ///   { id = 101; name = "Alice" },
+  ///   { id = 22; name = "Bob" },
+  ///   { id = 75; name = "Charlie" },
+  ///   { id = 5; name = "David" },
+  /// ];
+  ///
+  /// // Sort the users by their 'id' field
+  /// Sort.mergeSort<User>(users, func(user) = user.id);
+  ///
+  /// // The 'users' array is now sorted in-place
+  /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
+  /// ```
   public func mergeSort<T>(array : [var T], key : T -> Nat32) {
     Merge.mergeSort(array, key);
   };
