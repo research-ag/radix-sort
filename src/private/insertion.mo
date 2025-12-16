@@ -5,6 +5,7 @@ module {
   let nat = Nat32.toNat;
 
   // Must have: len <= 8
+  // Use dest = buffer when sorting in place
   public func insertionSortSmall<T>(buffer : [var T], dest : [var T], key : T -> Nat32, newFrom : Nat32, len : Nat32) {
     debug assert len > 0;
     switch (len) {
@@ -556,6 +557,527 @@ module {
         dest[index5] := t5;
         dest[index6] := t6;
         dest[index7] := t7;
+      };
+      case (_) Runtime.trap("insertionSortSmall for len > 8 is not implemented.");
+    };
+  };
+
+  // sort from buffer to dest array at the given offset
+  public func insertionSortSmallMove<T>(buffer : [var T], dest : [var T], key : T -> Nat32, newFrom : Nat32, len : Nat32, offset : Nat32) {
+    debug assert len > 0;
+    switch (len) {
+      case (1) {
+        dest[nat(offset)] := buffer[nat(newFrom)];
+      };
+      case (2) {
+        let t0 = buffer[nat(newFrom)];
+        let t1 = buffer[nat(newFrom +% 1)];
+        if (key(t1) < key(t0)) {
+          dest[nat(offset)] := t1;
+          dest[nat(offset +% 1)] := t0;
+        } else {
+          dest[nat(offset)] := t0;
+          dest[nat(offset +% 1)] := t1;
+        };
+      };
+      case (3) {
+        var t0 = buffer[nat(newFrom)];
+        var k0 = key(t0);
+        var t1 = buffer[nat(newFrom +% 1)];
+        var k1 = key(t1);
+        let t2 = buffer[nat(newFrom +% 2)];
+        let k2 = key(t2);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+
+        if (k2 < k1) {
+          if (k2 < k0) {
+            dest[nat(offset)] := t2;
+            dest[nat(offset +% 1)] := t0;
+            dest[nat(offset +% 2)] := t1;
+          } else {
+            dest[nat(offset)] := t0;
+            dest[nat(offset +% 1)] := t2;
+            dest[nat(offset +% 2)] := t1;
+          };
+        } else {
+          dest[nat(offset)] := t0;
+          dest[nat(offset +% 1)] := t1;
+          dest[nat(offset +% 2)] := t2;
+        };
+      };
+      case (4) {
+        var t0 = buffer[nat(newFrom)];
+        var k0 = key(t0);
+        var t1 = buffer[nat(newFrom +% 1)];
+        var k1 = key(t1);
+        var t2 = buffer[nat(newFrom +% 2)];
+        var k2 = key(t2);
+        var t3 = buffer[nat(newFrom +% 3)];
+        var k3 = key(t3);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+
+        if (k3 < k2) {
+          tv := t3;
+          t3 := t2;
+          if (k3 < k1) {
+            t2 := t1;
+            if (k3 < k0) { t1 := t0; t0 := tv } else {
+              t1 := tv;
+            };
+          } else { t2 := tv };
+        };
+
+        dest[nat(offset)] := t0;
+        dest[nat(offset +% 1)] := t1;
+        dest[nat(offset +% 2)] := t2;
+        dest[nat(offset +% 3)] := t3;
+      };
+      case (5) {
+        var t0 = buffer[nat(newFrom)];
+        var k0 = key(t0);
+        var t1 = buffer[nat(newFrom +% 1)];
+        var k1 = key(t1);
+        var t2 = buffer[nat(newFrom +% 2)];
+        var k2 = key(t2);
+        var t3 = buffer[nat(newFrom +% 3)];
+        var k3 = key(t3);
+        var t4 = buffer[nat(newFrom +% 4)];
+        var k4 = key(t4);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+        tv := t3;
+        kv := k3;
+        if (kv < k2) {
+          t3 := t2;
+          k3 := k2;
+          if (kv < k1) {
+            t2 := t1;
+            k2 := k1;
+            if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              t1 := tv;
+              k1 := kv;
+            };
+          } else { t2 := tv; k2 := kv };
+        };
+        tv := t4;
+        kv := k4;
+        if (kv < k3) {
+          t4 := t3;
+          if (kv < k2) {
+            t3 := t2;
+            if (kv < k1) {
+              t2 := t1;
+              if (kv < k0) { t1 := t0; t0 := tv } else {
+                t1 := tv;
+              };
+            } else { t2 := tv };
+          } else { t3 := tv };
+        };
+
+        dest[nat(offset)] := t0;
+        dest[nat(offset +% 1)] := t1;
+        dest[nat(offset +% 2)] := t2;
+        dest[nat(offset +% 3)] := t3;
+        dest[nat(offset +% 4)] := t4;
+      };
+      case (6) {
+        var t0 = buffer[nat(newFrom)];
+        var k0 = key(t0);
+        var t1 = buffer[nat(newFrom +% 1)];
+        var k1 = key(t1);
+        var t2 = buffer[nat(newFrom +% 2)];
+        var k2 = key(t2);
+        var t3 = buffer[nat(newFrom +% 3)];
+        var k3 = key(t3);
+        var t4 = buffer[nat(newFrom +% 4)];
+        var k4 = key(t4);
+        var t5 = buffer[nat(newFrom +% 5)];
+        var k5 = key(t5);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+        tv := t3;
+        kv := k3;
+        if (kv < k2) {
+          t3 := t2;
+          k3 := k2;
+          if (kv < k1) {
+            t2 := t1;
+            k2 := k1;
+            if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              t1 := tv;
+              k1 := kv;
+            };
+          } else { t2 := tv; k2 := kv };
+        };
+        tv := t4;
+        kv := k4;
+        if (kv < k3) {
+          t4 := t3;
+          k4 := k3;
+          if (kv < k2) {
+            t3 := t2;
+            k3 := k2;
+            if (kv < k1) {
+              t2 := t1;
+              k2 := k1;
+              if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                t1 := tv;
+                k1 := kv;
+              };
+            } else { t2 := tv; k2 := kv };
+          } else { t3 := tv; k3 := kv };
+        };
+        tv := t5;
+        kv := k5;
+        if (kv < k4) {
+          t5 := t4;
+          if (kv < k3) {
+            t4 := t3;
+            if (kv < k2) {
+              t3 := t2;
+              if (kv < k1) {
+                t2 := t1;
+                if (kv < k0) { t1 := t0; t0 := tv } else {
+                  t1 := tv;
+                };
+              } else { t2 := tv };
+            } else { t3 := tv };
+          } else { t4 := tv };
+        };
+
+        dest[nat(offset)] := t0;
+        dest[nat(offset +% 1)] := t1;
+        dest[nat(offset +% 2)] := t2;
+        dest[nat(offset +% 3)] := t3;
+        dest[nat(offset +% 4)] := t4;
+        dest[nat(offset +% 5)] := t5;
+      };
+      case (7) {
+        var t0 = buffer[nat(newFrom)];
+        var k0 = key(t0);
+        var t1 = buffer[nat(newFrom +% 1)];
+        var k1 = key(t1);
+        var t2 = buffer[nat(newFrom +% 2)];
+        var k2 = key(t2);
+        var t3 = buffer[nat(newFrom +% 3)];
+        var k3 = key(t3);
+        var t4 = buffer[nat(newFrom +% 4)];
+        var k4 = key(t4);
+        var t5 = buffer[nat(newFrom +% 5)];
+        var k5 = key(t5);
+        var t6 = buffer[nat(newFrom +% 6)];
+        var k6 = key(t6);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+        tv := t3;
+        kv := k3;
+        if (kv < k2) {
+          t3 := t2;
+          k3 := k2;
+          if (kv < k1) {
+            t2 := t1;
+            k2 := k1;
+            if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              t1 := tv;
+              k1 := kv;
+            };
+          } else { t2 := tv; k2 := kv };
+        };
+        tv := t4;
+        kv := k4;
+        if (kv < k3) {
+          t4 := t3;
+          k4 := k3;
+          if (kv < k2) {
+            t3 := t2;
+            k3 := k2;
+            if (kv < k1) {
+              t2 := t1;
+              k2 := k1;
+              if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                t1 := tv;
+                k1 := kv;
+              };
+            } else { t2 := tv; k2 := kv };
+          } else { t3 := tv; k3 := kv };
+        };
+        tv := t5;
+        kv := k5;
+        if (kv < k4) {
+          t5 := t4;
+          k5 := k4;
+          if (kv < k3) {
+            t4 := t3;
+            k4 := k3;
+            if (kv < k2) {
+              t3 := t2;
+              k3 := k2;
+              if (kv < k1) {
+                t2 := t1;
+                k2 := k1;
+                if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                  t1 := tv;
+                  k1 := kv;
+                };
+              } else { t2 := tv; k2 := kv };
+            } else { t3 := tv; k3 := kv };
+          } else { t4 := tv; k4 := kv };
+        };
+        tv := t6;
+        kv := k6;
+        if (kv < k5) {
+          t6 := t5;
+          if (kv < k4) {
+            t5 := t4;
+            if (kv < k3) {
+              t4 := t3;
+              if (kv < k2) {
+                t3 := t2;
+                if (kv < k1) {
+                  t2 := t1;
+                  if (kv < k0) { t1 := t0; t0 := tv } else {
+                    t1 := tv;
+                  };
+                } else { t2 := tv };
+              } else { t3 := tv };
+            } else { t4 := tv };
+          } else { t5 := tv };
+        };
+
+        dest[nat(offset)] := t0;
+        dest[nat(offset +% 1)] := t1;
+        dest[nat(offset +% 2)] := t2;
+        dest[nat(offset +% 3)] := t3;
+        dest[nat(offset +% 4)] := t4;
+        dest[nat(offset +% 5)] := t5;
+        dest[nat(offset +% 6)] := t6;
+      };
+      case (8) {
+        var t0 = buffer[nat(newFrom)];
+        var k0 = key(t0);
+        var t1 = buffer[nat(newFrom +% 1)];
+        var k1 = key(t1);
+        var t2 = buffer[nat(newFrom +% 2)];
+        var k2 = key(t2);
+        var t3 = buffer[nat(newFrom +% 3)];
+        var k3 = key(t3);
+        var t4 = buffer[nat(newFrom +% 4)];
+        var k4 = key(t4);
+        var t5 = buffer[nat(newFrom +% 5)];
+        var k5 = key(t5);
+        var t6 = buffer[nat(newFrom +% 6)];
+        var k6 = key(t6);
+        var t7 = buffer[nat(newFrom +% 7)];
+        var k7 = key(t7);
+
+        if (k1 < k0) {
+          let v = t1;
+          t1 := t0;
+          t0 := v;
+          let kk = k1;
+          k1 := k0;
+          k0 := kk;
+        };
+        var tv = t2;
+        var kv = k2;
+        if (kv < k1) {
+          t2 := t1;
+          k2 := k1;
+          if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+            t1 := tv;
+            k1 := kv;
+          };
+        };
+        tv := t3;
+        kv := k3;
+        if (kv < k2) {
+          t3 := t2;
+          k3 := k2;
+          if (kv < k1) {
+            t2 := t1;
+            k2 := k1;
+            if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+              t1 := tv;
+              k1 := kv;
+            };
+          } else { t2 := tv; k2 := kv };
+        };
+        tv := t4;
+        kv := k4;
+        if (kv < k3) {
+          t4 := t3;
+          k4 := k3;
+          if (kv < k2) {
+            t3 := t2;
+            k3 := k2;
+            if (kv < k1) {
+              t2 := t1;
+              k2 := k1;
+              if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                t1 := tv;
+                k1 := kv;
+              };
+            } else { t2 := tv; k2 := kv };
+          } else { t3 := tv; k3 := kv };
+        };
+        tv := t5;
+        kv := k5;
+        if (kv < k4) {
+          t5 := t4;
+          k5 := k4;
+          if (kv < k3) {
+            t4 := t3;
+            k4 := k3;
+            if (kv < k2) {
+              t3 := t2;
+              k3 := k2;
+              if (kv < k1) {
+                t2 := t1;
+                k2 := k1;
+                if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                  t1 := tv;
+                  k1 := kv;
+                };
+              } else { t2 := tv; k2 := kv };
+            } else { t3 := tv; k3 := kv };
+          } else { t4 := tv; k4 := kv };
+        };
+        tv := t6;
+        kv := k6;
+        if (kv < k5) {
+          t6 := t5;
+          k6 := k5;
+          if (kv < k4) {
+            t5 := t4;
+            k5 := k4;
+            if (kv < k3) {
+              t4 := t3;
+              k4 := k3;
+              if (kv < k2) {
+                t3 := t2;
+                k3 := k2;
+                if (kv < k1) {
+                  t2 := t1;
+                  k2 := k1;
+                  if (kv < k0) { t1 := t0; k1 := k0; t0 := tv; k0 := kv } else {
+                    t1 := tv;
+                    k1 := kv;
+                  };
+                } else { t2 := tv; k2 := kv };
+              } else { t3 := tv; k3 := kv };
+            } else { t4 := tv; k4 := kv };
+          } else { t5 := tv; k5 := kv };
+        };
+        tv := t7;
+        kv := k7;
+        if (kv < k6) {
+          t7 := t6;
+          if (kv < k5) {
+            t6 := t5;
+            if (kv < k4) {
+              t5 := t4;
+              if (kv < k3) {
+                t4 := t3;
+                if (kv < k2) {
+                  t3 := t2;
+                  if (kv < k1) {
+                    t2 := t1;
+                    if (kv < k0) { t1 := t0; t0 := tv } else {
+                      t1 := tv;
+                    };
+                  } else { t2 := tv };
+                } else { t3 := tv };
+              } else { t4 := tv };
+            } else { t5 := tv };
+          } else { t6 := tv };
+        };
+
+        dest[nat(offset)] := t0;
+        dest[nat(offset +% 1)] := t1;
+        dest[nat(offset +% 2)] := t2;
+        dest[nat(offset +% 3)] := t3;
+        dest[nat(offset +% 4)] := t4;
+        dest[nat(offset +% 5)] := t5;
+        dest[nat(offset +% 6)] := t6;
+        dest[nat(offset +% 7)] := t7;
       };
       case (_) Runtime.trap("insertionSortSmall for len > 8 is not implemented.");
     };

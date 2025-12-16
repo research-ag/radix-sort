@@ -159,7 +159,6 @@ func tests() {
     1000,
     10_000,
   ];
-
   let fs : [Nat32 -> Nat32] = [
     func n = 1,
     func n = 2,
