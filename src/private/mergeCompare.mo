@@ -1,7 +1,8 @@
 import VarArray "mo:core/VarArray";
 import Nat32 "mo:core/Nat32";
 import Order "mo:core/Order";
-import { insertionSortSmall; insertionSortSmallMove } "./insertionCompare";
+import { insertionSortSmall } "./insertionCompare";
+import { insertionSortSmallMove } "./insertionCompareMove";
 import Prim "mo:⛔";
 
 module {
