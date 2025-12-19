@@ -9,7 +9,6 @@ import VarArray "mo:core/VarArray";
 
 import { bucketSort } "../src/private/bucket";
 import { insertionSortSmall } "../src/private/insertion";
-import { mergeSort } "../src/private/merge";
 import { mergeSort16 } "../src/private/merge16";
 
 func testOnArray(array : [var (Nat32, Nat)], f : [var (Nat32, Nat)] -> ()) {
@@ -25,6 +24,8 @@ func testOnArray(array : [var (Nat32, Nat)], f : [var (Nat32, Nat)] -> ()) {
     };
   };
 };
+
+func key(value : (Nat32, Nat)) : Nat32 = value.0;
 
 func testSort(n : Nat, mod : Nat64, sort : ([var (Nat32, Nat)], Nat32) -> ()) {
   let rng : Random.Random = Random.seed(0x5f5f5f5f5f5f5f5f);
@@ -56,12 +57,12 @@ func testMergeSort16(n : Nat) {
         func(x, _) = x,
         0 : Nat32,
         Nat32.fromNat(n),
-        false
+        false,
       );
     },
   );
   let bufferLong = VarArray.repeat<(Nat32, Nat)>((0, 0), n);
-    testSort(
+  testSort(
     n,
     2 ** 32,
     func(array, _) {
@@ -71,7 +72,7 @@ func testMergeSort16(n : Nat) {
         func(x, _) = x,
         0 : Nat32,
         Nat32.fromNat(n),
-        true
+        true,
       );
       for (i in array.keys()) array[i] := bufferLong[i];
     },
@@ -180,13 +181,13 @@ func tests() {
 
   for (n in ns.vals()) {
     for (mod in mods.vals()) {
-      testSort(n, mod, func(a, max) = Sort.radixSort(a, func(x, y) = x, ?max));
-      testSort(n, mod, func(a, max) = Sort.bucketSort(a, func(x, y) = x, ?max));
+      testSort(n, mod, func(a, max) = a.radixSort(?max));
+      testSort(n, mod, func(a, max) = a.bucketSort(?max));
     };
   };
 
   for (n in ns.vals()) {
-    testSort(n, 2 ** 32, func(a, max) = mergeSort(a, func(x, y) = x));
+    testSort(n, 2 ** 32, func(a, max) = a.mergeSort());
   };
 
   let arrays : [[var (Nat32, Nat)]] = [
@@ -213,9 +214,9 @@ func tests() {
   ];
 
   for (a in arrays.vals()) {
-    testOnArray(a, func a = Sort.radixSort(a, func x = x.0, null));
-    testOnArray(a, func a = Sort.bucketSort(a, func x = x.0, null));
-    testOnArray(a, func a = mergeSort(a, func(x, y) = x));
+    testOnArray(a, func a = a.radixSort(null));
+    testOnArray(a, func a = a.bucketSort(null));
+    testOnArray(a, func a = a.mergeSort());
   };
 };
 

@@ -1,6 +1,6 @@
 # sort
 
-A high-performance, merge sort, radix sort and bucket sort implementations for Motoko. Each algorithm is **STABLE**, i.e. for equal elements their relarive order is preserved.
+A high-performance, merge sort, radix sort and bucket sort implementations for Motoko. Each algorithm is **stable**, i.e. for equal elements their relarive order is preserved.
 
 ## What is Radix Sort and Bucket Sort?
 
@@ -39,7 +39,7 @@ let users : [var User] = [var
 ];
 
 // Sort the users by their 'id' field
-Sort.radixSort<User>(users, func(user) = user.id, null);
+users.radixSort<User>(func(user) = user.id, null);
 
 // The 'users' array is now sorted in-place
 Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
@@ -47,25 +47,25 @@ Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bo
 
 ## API
 
-### `radixSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32)`
+### `func radixSort<T>(self : [var T], key : (implicit : T -> Nat32), maxInclusive : ?Nat32)`
 
-Sorts the given array in-place using an iterative radix sort algorithm. The algorithm is **STABLE**.
+Sorts the given array in-place using an iterative radix sort algorithm. The algorithm is **stable**.
 
-*   `array`: The array to be sorted.
+*   `self`: The array to be sorted.
 *   `key`: A function that extracts a `Nat32` key from an element of the array. The array will be sorted based on this key.
 *   `maxInclusive`: An optional `Nat32` value representing the maximum possible value of the key. Providing this value can optimize the sorting process by tailoring the number of bits to consider. If `null` is passed, the sort will consider all 32 bits of the key.
 
-### `bucketSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32)`
+### `func bucketSort<T>(self : [var T], key : (implicit : T -> Nat32), maxInclusive : ?Nat32)`
 
-Sorts the given array in-place using a recursive bucket sort. This implementation is highly optimized for random data but may be slightly slower than `radixSort` in the general case. The algorithm is **STABLE**.
+Sorts the given array in-place using a recursive bucket sort. This implementation is highly optimized for random data but may be slightly slower than `radixSort` in the general case. The algorithm is **stable**.
 
 *   Parameters are the same as `radixSort`.
 
-### `mergeSort<T>(array : [var T], key : T -> Nat32)`
+### `func mergeSort<T>(self : [var T], key : (implicit : T -> Nat32))`
 
-Sorts the given array in-place using a recursive merge sort. This implementation allocates buffer of type `T` of `array.size() / 2`, not `array.size()`. The algorithm is **STABLE**.
+Sorts the given array in-place using a recursive merge sort. This implementation allocates buffer of type `T` of `self.size() / 2`, not `self.size()`. The algorithm is **stable**.
 
-*   `array`: The array to be sorted.
+*   `self`: The array to be sorted.
 *   `key`: A function that extracts a `Nat32` key from an element of the array. The array will be sorted based on this key.
 
 ## Performance

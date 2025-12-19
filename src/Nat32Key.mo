@@ -35,13 +35,13 @@ module {
   /// ];
   ///
   /// // Sort the users by their 'id' field
-  /// Sort.mergeSort<User>(users, func(user) = user.id);
+  /// users.mergeSort<User>(func(user) = user.id);
   ///
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
-  public func mergeSort<T>(array : [var T], key : T -> Nat32) {
-    Merge.mergeSort(array, key);
+  public func mergeSort<T>(self : [var T], key : (implicit : T -> Nat32)) {
+    Merge.mergeSort(self, key);
   };
 
   /// Sorts an array in place using bucket sort.
@@ -68,14 +68,14 @@ module {
   /// ];
   ///
   /// // Sort the users by their 'id' field
-  /// Sort.bucketSort<User>(users, func(user) = user.id, null);
+  /// users.bucketSort<User>(func(user) = user.id, null);
   ///
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
-  public func bucketSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32) {
+  public func bucketSort<T>(self : [var T], key : (implicit : T -> Nat32), maxInclusive : ?Nat32) {
     Bucket.bucketSort(
-      array,
+      self,
       key,
       maxInclusive,
       func n = Nat32.max(1, 30 - Nat32.min(Nat32.bitcountLeadingZero(n), 30)),
@@ -106,24 +106,24 @@ module {
   /// ];
   ///
   /// // Sort the users by their 'id' field
-  /// Sort.radixSort<User>(users, func(user) = user.id, null);
+  /// users.radixSort<User>(func(user) = user.id, null);
   ///
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
-  public func radixSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32) {
-    let n = array.size();
+  public func radixSort<T>(self : [var T], key : (implicit : T -> Nat32), maxInclusive : ?Nat32) {
+    let n = self.size();
     if (n <= 1) return;
     if (n <= 2) {
-      if (key(array[1]) < key(array[0])) {
-        let t0 = array[0];
-        array[0] := array[1];
-        array[1] := t0;
+      if (key(self[1]) < key(self[0])) {
+        let t0 = self[0];
+        self[0] := self[1];
+        self[1] := t0;
       };
       return;
     };
     if (n <= 8) {
-      insertionSortSmall(array, array, key, 0 : Nat32, Nat32.fromNat(n));
+      insertionSortSmall(self, self, key, 0 : Nat32, Nat32.fromNat(n));
       return;
     };
 
@@ -141,7 +141,7 @@ module {
     let STEPS = (bits + NBITS - 1) / NBITS;
 
     if (STEPS > 3) {
-      Merge.mergeSort(array, key);
+      Merge.mergeSort(self, key);
       return;
     };
 
@@ -149,7 +149,7 @@ module {
     let RADIX = 1 << RADIX_BITS;
     let MASK = RADIX -% 1;
 
-    let buffer = VarArray.repeat<T>(array[0], n);
+    let buffer = VarArray.repeat<T>(self[0], n);
     let counts = VarArray.repeat<Nat32>(0, nat(RADIX));
 
     for (step in Nat32.range(0, STEPS)) {
@@ -158,11 +158,11 @@ module {
       let SHIFT = step * RADIX_BITS;
 
       if (step == 0) {
-        for (x in array.vals()) counts[nat(key(x) & MASK)] +%= 1;
+        for (x in self.vals()) counts[nat(key(x) & MASK)] +%= 1;
       } else if (step < (STEPS - 1 : Nat32)) {
-        for (x in array.vals()) counts[nat((key(x) >> SHIFT) & MASK)] +%= 1;
+        for (x in self.vals()) counts[nat((key(x) >> SHIFT) & MASK)] +%= 1;
       } else {
-        for (x in array.vals()) counts[nat(key(x) >> SHIFT)] +%= 1;
+        for (x in self.vals()) counts[nat(key(x) >> SHIFT)] +%= 1;
       };
 
       var sum : Nat32 = 0;
@@ -172,7 +172,7 @@ module {
         sum +%= t;
       };
 
-      let (from, to) = if (step % 2 == 0) (array, buffer) else (buffer, array);
+      let (from, to) = if (step % 2 == 0) (self, buffer) else (buffer, self);
 
       if (step == 0) {
         for (x in from.vals()) {
@@ -198,6 +198,6 @@ module {
       };
     };
 
-    if (STEPS % 2 != 0) for (i in array.keys()) array[i] := buffer[i];
+    if (STEPS % 2 != 0) for (i in self.keys()) self[i] := buffer[i];
   };
 };
