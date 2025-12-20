@@ -1,16 +1,12 @@
 import Nat32 "mo:core/Nat32";
-import VarArray "mo:core/VarArray";
-import Prim "mo:⛔";
 
 import Bucket "private/bucket";
-import { insertionSortSmall } "private/insertion";
 import Merge "private/merge";
+import Radix "private/radix";
 
 /// This module provides implementations of radix sort and bucket sort for sorting arrays of elements.
 /// The sorts are based on a key function that maps elements to `Nat32` values.
 module {
-  let nat = Prim.nat32ToNat;
-
   /// Sorts an array in place using merge sort.
   ///
   /// Max `n` value id `2 ** 32 - 1`.
@@ -112,92 +108,6 @@ module {
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
   public func radixSort<T>(self : [var T], key : (implicit : T -> Nat32), maxInclusive : ?Nat32) {
-    let n = self.size();
-    if (n <= 1) return;
-    if (n <= 2) {
-      if (key(self[1]) < key(self[0])) {
-        let t0 = self[0];
-        self[0] := self[1];
-        self[1] := t0;
-      };
-      return;
-    };
-    if (n <= 8) {
-      insertionSortSmall(self, self, key, 0 : Nat32, Nat32.fromNat(n));
-      return;
-    };
-
-    let bits : Nat32 = 32 - (
-      switch (maxInclusive) {
-        case (null) 0;
-        case (?x) {
-          if (x == 0) return;
-          Nat32.bitcountLeadingZero(x);
-        };
-      }
-    );
-
-    let NBITS = 31 - Nat32.bitcountLeadingZero(Nat32.fromNat(n));
-    let STEPS = (bits + NBITS - 1) / NBITS;
-
-    if (STEPS > 3) {
-      Merge.mergeSort(self, key);
-      return;
-    };
-
-    let RADIX_BITS = (bits + STEPS - 1) / STEPS;
-    let RADIX = 1 << RADIX_BITS;
-    let MASK = RADIX -% 1;
-
-    let buffer = VarArray.repeat<T>(self[0], n);
-    let counts = VarArray.repeat<Nat32>(0, nat(RADIX));
-
-    for (step in Nat32.range(0, STEPS)) {
-      if (step > 0) for (i in counts.keys()) counts[i] := 0;
-
-      let SHIFT = step * RADIX_BITS;
-
-      if (step == 0) {
-        for (x in self.vals()) counts[nat(key(x) & MASK)] +%= 1;
-      } else if (step < (STEPS - 1 : Nat32)) {
-        for (x in self.vals()) counts[nat((key(x) >> SHIFT) & MASK)] +%= 1;
-      } else {
-        for (x in self.vals()) counts[nat(key(x) >> SHIFT)] +%= 1;
-      };
-
-      var sum : Nat32 = 0;
-      for (i in counts.keys()) {
-        let t = counts[i];
-        counts[i] := sum;
-        sum +%= t;
-      };
-
-      let (from, to) = if (step % 2 == 0) (self, buffer) else (buffer, self);
-
-      if (step == 0) {
-        for (x in from.vals()) {
-          let digit = nat(key(x) & MASK);
-          let pos = counts[digit];
-          to[nat(pos)] := x;
-          counts[digit] := pos +% 1;
-        };
-      } else if (step < (STEPS - 1 : Nat32)) {
-        for (x in from.vals()) {
-          let digit = nat((key(x) >> SHIFT) & MASK);
-          let pos = counts[digit];
-          to[nat(pos)] := x;
-          counts[digit] := pos +% 1;
-        };
-      } else {
-        for (x in from.vals()) {
-          let digit = nat(key(x) >> SHIFT);
-          let pos = counts[digit];
-          to[nat(pos)] := x;
-          counts[digit] := pos +% 1;
-        };
-      };
-    };
-
-    if (STEPS % 2 != 0) for (i in self.keys()) self[i] := buffer[i];
+    Radix.radixSort(self, key, maxInclusive);
   };
 };

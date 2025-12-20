@@ -8,6 +8,7 @@ import Sort "../src/Nat32Key";
 import VarArray "mo:core/VarArray";
 
 import { bucketSort } "../src/private/bucket";
+import { withStepsRadix } "../src/private/radix";
 import { insertionSortSmall } "../src/private/insertion";
 import { mergeSort16 } "../src/private/merge16";
 
@@ -164,17 +165,33 @@ func tests() {
     func n = 1,
     func n = 2,
   ];
-
   let mods : [Nat64] = [
     16,
     100,
     2 ** 32,
   ];
+  let radixBits : [Nat32] = [1, 2, 3, 16];
 
   for (f in fs.vals()) {
     for (mod in mods.vals()) {
       for (n in ns.vals()) if (n <= 1000) {
         testSort(n, mod, func(a, max) = bucketSort(a, func(x, y) = x, ?max, f));
+      };
+    };
+  };
+
+  for (radixBit in radixBits.vals()) {
+    for (mod in mods.vals()) {
+      for (n in ns.vals()) if (n <= 1000) {
+        testSort(
+          n,
+          mod,
+          func(a, max) {
+            let bits = 32 - Nat32.bitcountLeadingZero(max);
+            let steps = (bits + radixBit - 1) / radixBit;
+            withStepsRadix(a, func(x, y) = x, bits, steps, radixBit);
+          },
+        );
       };
     };
   };
