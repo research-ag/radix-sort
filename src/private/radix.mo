@@ -8,7 +8,7 @@ module {
   let nat = Prim.nat32ToNat;
 
   public func withStepsRadix<T>(self : [var T], key : T -> Nat32, bits : Nat32, steps : Nat32, radixBits : Nat32) {
-    debug assert steps > 0;
+    debug assert bits > 0;
     debug assert steps * radixBits >= bits;
 
     let RADIX = 1 << radixBits;
@@ -36,6 +36,8 @@ module {
         counts[i] := sum;
         sum +%= t;
       };
+
+      debug assert nat(sum) == self.size();
 
       let (from, to) = if (step % 2 == 0) (self, buffer) else (buffer, self);
 
