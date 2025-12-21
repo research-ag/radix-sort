@@ -81,8 +81,8 @@ module {
               );
             };
           };
-          case ("bucket") for (a in arrays[2][ci].vals()) Sort.bucketSort(a, func i = i, null);
-          case ("radix") for (a in arrays[3][ci].vals()) Sort.radixSort(a, func i = i, null);
+          case ("bucket") for (a in arrays[2][ci].vals()) Sort.bucketSort(a, func i = i, #default);
+          case ("radix") for (a in arrays[3][ci].vals()) Sort.radixSort(a, func i = i, #default);
           case ("var-array") for (a in arrays[4][ci].vals()) VarArray.sortInPlace(a, Nat32.compare);
           case (_) Prim.trap("Unknown row");
         };

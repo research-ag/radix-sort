@@ -57,15 +57,15 @@ module {
         switch (row) {
           case (0) {
             let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);
-            func() = Sort.bucketSort<Nat32>(varSource, func i = i, null);
+            func() = Sort.bucketSort<Nat32>(varSource, func i = i, #default);
           };
           case (1) {
             let varSource = VarArray.repeat<Nat32>(0, sourceArrays[col].size());
-            func() = Sort.bucketSort<Nat32>(varSource, func i = i, null);
+            func() = Sort.bucketSort<Nat32>(varSource, func i = i, #default);
           };
           case (2) {
             let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);
-            func() = Sort.radixSort<Nat32>(varSource, func i = i, null);
+            func() = Sort.radixSort<Nat32>(varSource, func i = i, #default);
           };
           case (3) {
             let varSource = Array.toVarArray<Nat32>(sourceArrays[col]);

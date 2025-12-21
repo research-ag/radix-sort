@@ -7,6 +7,11 @@ import Radix "private/radix";
 /// This module provides implementations of radix sort and bucket sort for sorting arrays of elements.
 /// The sorts are based on a key function that maps elements to `Nat32` values.
 module {
+  public type Settings = {
+    #default;
+    #maxInclusive : Nat32;
+  };
+
   /// Sorts an array in place using merge sort.
   ///
   /// Max `n` value id `2 ** 32 - 1`.
@@ -69,11 +74,14 @@ module {
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
-  public func bucketSort<T>(self : [var T], key : (implicit : T -> Nat32), maxInclusive : ?Nat32) {
+  public func bucketSort<T>(self : [var T], key : (implicit : T -> Nat32), settings : Settings) {
     Bucket.bucketSort(
       self,
       key,
-      maxInclusive,
+      switch (settings) {
+        case (#default) null;
+        case (#maxInclusive x) ?x;
+      },
       func n = Nat32.max(1, 30 - Nat32.min(Nat32.bitcountLeadingZero(n), 30)),
     );
   };
@@ -107,7 +115,14 @@ module {
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
   /// ```
-  public func radixSort<T>(self : [var T], key : (implicit : T -> Nat32), maxInclusive : ?Nat32) {
-    Radix.radixSort(self, key, maxInclusive);
+  public func radixSort<T>(self : [var T], key : (implicit : T -> Nat32), settings : Settings) {
+    Radix.radixSort(
+      self,
+      key,
+      switch (settings) {
+        case (#default) null;
+        case (#maxInclusive x) ?x;
+      },
+    );
   };
 };

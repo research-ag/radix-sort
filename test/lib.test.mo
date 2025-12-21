@@ -198,8 +198,8 @@ func tests() {
 
   for (n in ns.vals()) {
     for (mod in mods.vals()) {
-      testSort(n, mod, func(a, max) = a.radixSort(?max));
-      testSort(n, mod, func(a, max) = a.bucketSort(?max));
+      testSort(n, mod, func(a, max) = a.radixSort(#maxInclusive max));
+      testSort(n, mod, func(a, max) = a.bucketSort(#maxInclusive max));
     };
   };
 
@@ -231,8 +231,8 @@ func tests() {
   ];
 
   for (a in arrays.vals()) {
-    testOnArray(a, func a = a.radixSort(null));
-    testOnArray(a, func a = a.bucketSort(null));
+    testOnArray(a, func a = a.radixSort(#default));
+    testOnArray(a, func a = a.bucketSort(#default));
     testOnArray(a, func a = a.mergeSort());
   };
 };
