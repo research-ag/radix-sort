@@ -198,8 +198,8 @@ func tests() {
 
   for (n in ns.vals()) {
     for (mod in mods.vals()) {
-      testSort(n, mod, func(a, max) = a.radixSort(#maxKeyValue max));
-      testSort(n, mod, func(a, max) = a.bucketSort(#maxKeyValue max));
+      testSort(n, mod, func(a, max) = a.radixSort(#max max));
+      testSort(n, mod, func(a, max) = a.bucketSort(#max max));
     };
   };
 

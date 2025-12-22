@@ -68,7 +68,7 @@ module {
     if (steps % 2 != 0) for (i in self.keys()) self[i] := buffer[i];
   };
 
-  public func radixSort<T>(self : [var T], key : (implicit : T -> Nat32), maxInclusive : ?Nat32) {
+  public func radixSort<T>(self : [var T], key : (implicit : T -> Nat32), max : ?Nat32) {
     let n = self.size();
     if (n <= 1) return;
     if (n <= 2) {
@@ -85,7 +85,7 @@ module {
     };
 
     let bits : Nat32 = 32 - (
-      switch (maxInclusive) {
+      switch (max) {
         case (null) 0;
         case (?x) {
           if (x == 0) return;
