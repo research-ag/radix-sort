@@ -8,17 +8,8 @@ import { mergeSort16 } "./merge16";
 module {
   let nat = Prim.nat32ToNat;
 
-  func copy<T>(source : [var T], dest : [var T], from : Nat32, to : Nat32) {
-    var i = from;
-    while (i < to) {
-      let ii = Prim.nat32ToNat(i);
-      dest[ii] := source[ii];
-      i +%= 1;
-    };
-  };
-
-  // should be 1 <= radixBits n <= 31 for all n
-  public func bucketSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32, radixBits : Nat32 -> Nat32) {
+  // should be 1 <= radixBitsFunc n <= 31 for all n
+  public func bucketSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32, radixBitsFunc : Nat32 -> Nat32) {
     let n = Nat32.fromNat(array.size());
 
     // n <= 1 is already sorted
@@ -49,19 +40,20 @@ module {
 
     // sort n > 16 with bucket sort
     let buffer = VarArray.repeat(array[0], nat(n));
-    let bits : Nat32 = switch (max) {
-      case (null) 0;
-      case (?x) {
-        if (x == 0) return;
-        Nat32.bitcountLeadingZero(x);
-      };
-    };
-    bucketSortRecursive(radixBits, array, buffer, key, 0 : Nat32, n, bits, false);
+    let bits : Nat32 = 32 - (
+      switch (max) {
+        case (null) 0;
+        case (?x) Nat32.bitcountLeadingZero(x);
+      }
+    );
+
+    if (bits == 0) return;
+
+    bucketSortRecursive(radixBitsFunc, array, buffer, key, 0 : Nat32, n, bits, false);
   };
 
-  // Will only be called with n > 16
   func bucketSortRecursive<T>(
-    radixBits : Nat32 -> Nat32,
+    radixBitsFunc : Nat32 -> Nat32,
     array : [var T],
     buffer : [var T],
     key : T -> Nat32,
@@ -72,28 +64,29 @@ module {
   ) {
     let n = to - from;
     debug assert n > 16;
-    debug assert bits <= 31;
+    debug assert bits >= 1;
 
     let fullLength = n == Nat32.fromNat(array.size());
 
-    let rBits = radixBits(n);
-    debug assert 1 <= rBits and rBits <= 30;
-    let BITS_ADD = Nat32.min(rBits, 32 - bits);
-    let SHIFT = 32 - BITS_ADD;
-    let RADIX = nat(1 << BITS_ADD);
+    let r = radixBitsFunc(n);
+    debug assert 1 <= r and r <= 30;
+    let radixBits = Nat32.min(r, bits);
+    let radix = nat(1 << radixBits);
 
-    let counts = VarArray.repeat<Nat32>(0, RADIX);
+    let counts = VarArray.repeat<Nat32>(0, radix);
+    let irrelevantBits = 32 - bits;
+    let shift = 32 - radixBits;
     if (fullLength) {
-      if (bits == 0) {
-        for (x in array.vals()) counts[nat(key(x) >> SHIFT)] +%= 1;
+      if (irrelevantBits == 0) {
+        for (x in array.vals()) counts[nat(key(x) >> shift)] +%= 1;
       } else {
-        for (x in array.vals()) counts[nat((key(x) << bits) >> SHIFT)] +%= 1;
+        for (x in array.vals()) counts[nat((key(x) << irrelevantBits) >> shift)] +%= 1;
       };
     } else {
       var i = from;
       while (i < to) {
         let x = key(array[nat(i)]);
-        counts[nat((x << bits) >> SHIFT)] +%= 1;
+        counts[nat((x << irrelevantBits) >> shift)] +%= 1;
         i +%= 1;
       };
     };
@@ -107,16 +100,16 @@ module {
     debug assert sum == to;
 
     if (fullLength) {
-      if (bits == 0) {
+      if (irrelevantBits == 0) {
         for (x in array.vals()) {
-          let digit = nat(key(x) >> SHIFT);
+          let digit = nat(key(x) >> shift);
           let pos = counts[digit];
           buffer[nat(pos)] := x;
           counts[digit] := pos +% 1;
         };
       } else {
         for (x in array.vals()) {
-          let digit = nat((key(x) << bits) >> SHIFT);
+          let digit = nat((key(x) << irrelevantBits) >> shift);
           let pos = counts[digit];
           buffer[nat(pos)] := x;
           counts[digit] := pos +% 1;
@@ -126,7 +119,7 @@ module {
       var i = from;
       while (i < to) {
         let x = array[nat(i)];
-        let digit = nat((key(x) << bits) >> SHIFT);
+        let digit = nat((key(x) << irrelevantBits) >> shift);
         let pos = counts[digit];
         buffer[nat(pos)] := x;
         counts[digit] := pos +% 1;
@@ -166,12 +159,19 @@ module {
       } else if (len <= 16) {
         mergeSort16(buffer, array, key, newFrom, newTo, not odd);
       } else {
-        let newBits = bits + BITS_ADD;
-        if (newBits >= 32) {
+        let newBits = bits - radixBits;
+        if (newBits == 0) {
           // no sort bits left, all keys in bucket are equal
-          if (not odd) copy(buffer, array, from, to);
+          if (not odd) {
+            var i = from;
+            while (i < to) {
+              let ii = Prim.nat32ToNat(i);
+              array[ii] := buffer[ii];
+              i +%= 1;
+            };
+          };
         } else {
-          bucketSortRecursive(radixBits, buffer, array, key, newFrom, newTo, newBits, not odd);
+          bucketSortRecursive(radixBitsFunc, buffer, array, key, newFrom, newTo, newBits, not odd);
         };
       };
       newFrom := newTo;

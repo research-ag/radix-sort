@@ -7,9 +7,10 @@ import Prim "mo:⛔";
 module {
   let nat = Prim.nat32ToNat;
 
-  public func withStepsRadix<T>(self : [var T], key : T -> Nat32, bits : Nat32, steps : Nat32, radixBits : Nat32) {
-    debug assert bits > 0;
-    debug assert steps * radixBits >= bits;
+  public func withStepsRadix<T>(self : [var T], key : T -> Nat32, totalBits : Nat32, steps : Nat32, radixBits : Nat32) {
+    debug assert totalBits > 0;
+    debug assert steps * radixBits >= totalBits;
+    debug assert (steps - 1) * radixBits < totalBits;
 
     let RADIX = 1 << radixBits;
     let MASK = RADIX -% 1;
@@ -84,7 +85,7 @@ module {
       return;
     };
 
-    let bits : Nat32 = 32 - (
+    let totalBits : Nat32 = 32 - (
       switch (max) {
         case (null) 0;
         case (?x) {
@@ -95,14 +96,14 @@ module {
     );
 
     let NBITS = 31 - Nat32.bitcountLeadingZero(Nat32.fromNat(n));
-    let STEPS = (bits + NBITS - 1) / NBITS;
+    let STEPS = (totalBits + NBITS - 1) / NBITS;
 
     if (STEPS > 3) {
       Merge.mergeSort(self, key);
       return;
     };
 
-    let RADIX_BITS = (bits + STEPS - 1) / STEPS;
-    withStepsRadix(self, key, bits, STEPS, RADIX_BITS);
+    let RADIX_BITS = (totalBits + STEPS - 1) / STEPS;
+    withStepsRadix(self, key, totalBits, STEPS, RADIX_BITS);
   };
 }
