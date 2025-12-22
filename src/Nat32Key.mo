@@ -7,14 +7,19 @@ import Radix "private/radix";
 /// This module provides implementations of radix sort and bucket sort for sorting arrays of elements.
 /// The sorts are based on a key function that maps elements to `Nat32` values.
 module {
+  /// Sorting algorithms options.
+  ///
+  /// `#default` means the no upper bound on key assumed.
+  ///
+  /// `#max` means maximal values inclusive of keys of the array.
   public type Settings = {
     #default;
-    #maxInclusive : Nat32;
+    #max : Nat32;
   };
 
   /// Sorts an array in place using merge sort.
   ///
-  /// Max `n` value id `2 ** 32 - 1`.
+  /// Max `self.size()` value is `2 ** 32 - 1`.
   ///
   /// Example:
   /// ```motoko
@@ -47,7 +52,7 @@ module {
 
   /// Sorts an array in place using bucket sort.
   ///
-  /// Max `n` value id `2 ** 32 - 1`.
+  /// Max `self.size()` value is `2 ** 32 - 1`.
   ///
   /// Example:
   /// ```motoko
@@ -69,7 +74,7 @@ module {
   /// ];
   ///
   /// // Sort the users by their 'id' field
-  /// users.bucketSort<User>(func(user) = user.id, null);
+  /// users.bucketSort<User>(func(user) = user.id, #default);
   ///
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
@@ -80,7 +85,7 @@ module {
       key,
       switch (settings) {
         case (#default) null;
-        case (#maxInclusive x) ?x;
+        case (#max x) ?x;
       },
       func n = 30 - Nat32.min(Nat32.bitcountLeadingZero(n), 29),
     );
@@ -88,7 +93,7 @@ module {
 
   /// Sorts an array in place using radix sort.
   ///
-  /// Max `n` value id `2 ** 32 - 1`.
+  /// Max `self.size()` value is `2 ** 32 - 1`.
   ///
   /// Example:
   /// ```motoko
@@ -110,7 +115,7 @@ module {
   /// ];
   ///
   /// // Sort the users by their 'id' field
-  /// users.radixSort<User>(func(user) = user.id, null);
+  /// users.radixSort<User>(func(user) = user.id, #default);
   ///
   /// // The 'users' array is now sorted in-place
   /// Array.fromVarArray(VarArray.map(users, func(user) = user.name)) == ["David", "Bob", "Charlie", "Alice"]
@@ -121,7 +126,7 @@ module {
       key,
       switch (settings) {
         case (#default) null;
-        case (#maxInclusive x) ?x;
+        case (#max x) ?x;
       },
     );
   };

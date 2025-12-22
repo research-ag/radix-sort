@@ -18,7 +18,7 @@ module {
   };
 
   // should be 1 <= radixBits n <= 31 for all n
-  public func bucketSort<T>(array : [var T], key : T -> Nat32, maxInclusive : ?Nat32, radixBits : Nat32 -> Nat32) {
+  public func bucketSort<T>(array : [var T], key : T -> Nat32, max : ?Nat32, radixBits : Nat32 -> Nat32) {
     let n = Nat32.fromNat(array.size());
 
     // n <= 1 is already sorted
@@ -49,7 +49,7 @@ module {
 
     // sort n > 16 with bucket sort
     let buffer = VarArray.repeat(array[0], nat(n));
-    let bits : Nat32 = switch (maxInclusive) {
+    let bits : Nat32 = switch (max) {
       case (null) 0;
       case (?x) {
         if (x == 0) return;
