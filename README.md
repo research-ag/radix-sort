@@ -14,7 +14,9 @@ Merge sort is a divide-and-conquer sorting algorithm that repeatedly splits the 
 
 * `radixSort`: Best default for `Nat32` keys; equally fast on average and worst cases.
 * `bucketSort`: Best for uniformly random keys; worst-case is slower.
-* `mergeSort`: Use when you specifically need merge sort.
+* `mergeSort`: Has the lowest memory waste; only buffer of size `array.size() / 2` of type `T`.
+
+See the performance section below.
 
 ## Install
 
