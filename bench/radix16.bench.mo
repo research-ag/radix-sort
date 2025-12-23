@@ -18,15 +18,16 @@ module {
     bench.description("Nat64 bit operations.");
 
     let rows = Array.tabulate(
-      19,
+      23,
       func i {
         let j = i / 2;
         let k = i % 2;
-        var n = 2 ** (8 + j) + k * (2 ** (7 + j));
+        var n = 2 ** (6 + j) + k * (2 ** (5 + j));
         Nat.toText(n);
       },
     );
     let cols = [
+      "1",
       "2",
       "3",
       "4",
@@ -42,7 +43,7 @@ module {
       rows.size(),
       func(j) = Array.tabulate<Nat32>(
         Option.unwrap(Nat.fromText(rows[j])),
-        func(i) = Nat64.toNat32(rng.nat64() % (2 ** 32)),
+        func(i) = Nat64.toNat32(rng.nat64() % (2 ** 16)),
       ),
     );
 
@@ -54,8 +55,8 @@ module {
 
         let varSource = Array.toVarArray<Nat32>(sourceArrays[row]);
         let steps = Nat32.fromIntWrap(Option.unwrap(Nat.fromText(cols[col])));
-        let radixBits = (32 + steps - 1) / steps;
-        func() = Radix.withStepsRadix<Nat32>(varSource, func i = i, 32, steps, radixBits);
+        let radixBits = (16 + steps - 1) / steps;
+        func() = Radix.withStepsRadix<Nat32>(varSource, func i = i, 16, steps, radixBits);
       },
     );
 
