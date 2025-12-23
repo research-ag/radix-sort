@@ -18,7 +18,7 @@ module {
     let bench = Bench.Bench();
 
     bench.name("Different sorts");
-    bench.description("Compare diffrent sort algorithms");
+    bench.description("Compare different sort algorithms");
 
     let rows = [
       "merge",

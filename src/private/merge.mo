@@ -26,7 +26,7 @@ module {
     mergeSortRec(array, buffer, key, 0 : Nat32, size, true, 0 : Nat32);
   };
 
-  // input data is alwways in array
+  // input data is always in array
   // even: write output data to array in place
   // odd: write output data to buffer at offset
   // offset is only used when odd

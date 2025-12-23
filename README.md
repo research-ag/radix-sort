@@ -1,12 +1,12 @@
 # sort
 
-An optimized merge sort, radix sort and bucket sort implementations for Motoko. Each algorithm is **stable**, i.e. for equal elements their relarive order is preserved.
+An optimized merge sort, radix sort and bucket sort implementations for Motoko. Each algorithm is **stable**, i.e. for equal elements their relative order is preserved.
 
 ## What is Radix Sort, Bucket Sort and Merge Sort?
 
 Radix sort is a non-comparative sorting algorithm that sorts integers by processing individual digits. It has a time complexity of `O(d * (n + b))`, where `d` is the number of digits, `n` is the number of elements, and `b` is the base of the number system. This makes it significantly faster than comparison-based sorting algorithms (like quicksort or mergesort) for sorting by `Nat32` keys (or other finite non-negative integer).
 
-Bucket sort version presented splits data into `2 ** m` buckets where `m` is maximal possible such that `2 ** m <= array.size()`, and sorts buckets with the same algorithm recursively with loop unrolled insertion sort for buckets of size less than or equal to 8. It works in `O(n)` for uniform random distribution.
+Bucket sort implementation splits data into `2 ** m` buckets where `m` is the maximal value such that `2 ** m <= array.size()`, and sorts buckets recursively, using an unrolled insertion sort for buckets of size <= 8. For uniformly random keys it works in `O(n)` expected time.
 
 Merge sort is a divide-and-conquer sorting algorithm that repeatedly splits the input into two halves, recursively sorts each half, and then merges the two sorted halves by repeatedly taking the smaller front element from each; this yields `O(n log n)` time in best, average, and worst cases, is stable, and (for array-based implementations) requires `O(n)` extra space.
 
@@ -82,7 +82,7 @@ Sorting algorithms options.
 
 ## Performance
 
-This library is heavily optimized for performance. The benchmarks in the `bench/` directory show that it significantly outperforms the standard library's `Array.sort` for large arrays of integers. The `bucketSort` implementation includes specific optimizations for small buckets, using insertion sort-like networks to minimize recursion overhead.
+This library is heavily optimized for performance. The benchmarks in the `bench/` directory show that it significantly outperforms the standard library's `Array.sort` for large arrays of integers. The `bucketSort` implementation includes specific optimizations for small buckets, using insertion-sort networks to minimize recursion overhead.
 
 ### Instructions
 
@@ -116,4 +116,4 @@ Contributor: Timo Hanke (timohanke)
 
 ## License
 
-Apache-2.0
+This project is licensed under the Apache-2.0 license.
