@@ -1,37 +1,37 @@
 # sort
 
-Optimized merge sort, radix sort, and bucket sort implementations for Motoko. Each algorithm is **stable**, i.e., for equal elements their relative order is preserved.
+Optimized merge sort, radix sort, and bucket sort implementations for Motoko. Each algorithm is **stable**, i.e., for equal elements, their relative order is preserved.
 
 ## What are Radix Sort, Bucket Sort, and Merge Sort?
 
-Currently we provide only sorting by `Nat32` key, but different key types as well as different sorting algorithms can be added later to the package.
+Currently, we provide only sorting by `Nat32` key, but different key types as well as additional sorting algorithms can be added to the package in the future.
 
 ### Radix sort
 
 Radix sort is a non-comparative sorting algorithm that sorts integers by processing individual digits.
 
-It has a time complexity of `O(steps * (n + radix))` and memory-complexity `O(radix + n)`, where `steps` is the number of digits, `n` is the number of elements, and `radix` is the base of the number system.
+It has a time complexity of `O(steps * (n + radix))` and memory complexity of `O(radix + n)`, where `steps` is the number of digits, `n` is the number of elements, and `radix` is the base of the number system.
 
-* We choose `radix` equal to maximal power of 2 less than or equal to `n` (with some stipluations, look at the code).
-* We choose `steps` to be minimal so that `max >= radix ** steps`, where `max` is either value from `settings` or `2 ** 32`.
+* We choose `radix` as the maximal power of 2 less than or equal to `n` (with some stipulations; see the code for details).
+* We choose `steps` to be minimal so that `max >= radix ** steps`, where `max` is either the value from `settings` or `2 ** 32`.
 
 This makes it significantly faster than comparison-based sorting algorithms (like quicksort or mergesort) for sorting by `Nat32` keys (or other finite non-negative integers).
 
 ### Bucket sort
 
-Bucket sort splits data into `2 ** m` buckets, where `m` is the maximal value such that `2 ** m <= array.size()`, and sorts buckets recursively, using an unrolled insertion sort for buckets of size <= 8. For uniformly random keys, it works in `O(n)` expected time and `O(n)` expected memory complexity. The worst case time complexity as well as the worst memory complexity is `O(steps * n)` where `steps` calculated in the same way as in radix sort, see above. 
+Bucket sort splits data into `2 ** m` buckets, where `m` is the maximal value such that `2 ** m <= array.size()`, and sorts buckets recursively, using an unrolled insertion sort for buckets of size <= 8. For uniformly random keys, it works in `O(n)` expected time and `O(n)` expected memory complexity. The worst-case time complexity as well as the worst-case memory complexity is `O(steps * n)`, where `steps` is calculated in the same way as in radix sort (see above). 
 
 ### Merge sort
 
-Merge sort is a divide-and-conquer sorting algorithm that repeatedly splits the input into two halves, recursively sorts each half, and then merges the two sorted halves by repeatedly taking the smaller front element from each; this yields `O(n log n)` time in best, average, and worst cases, is stable, and (for array-based implementations) requires `O(n / 2)` extra space.
+Merge sort is a divide-and-conquer sorting algorithm that repeatedly splits the input into two halves, recursively sorts each half, and then merges the two sorted halves by repeatedly taking the smaller front element from each. This yields `O(n log n)` time in best, average, and worst cases, is stable, and (for array-based implementations) requires `O(n / 2)` extra space.
 
 ### How to choose?
 
-* `radixSort`: Recommened choice for `Nat32` keys; equally fast on average and worst cases.
+* `radixSort`: Recommended choice for `Nat32` keys; equally fast on average and worst cases.
 * `bucketSort`: Best for uniformly random keys; worst-case is slower.
-* `mergeSort`: Has the lowest memory overhead; only buffer of size `array.size() / 2` of type `T`.
+* `mergeSort`: Has the lowest memory overhead; only a buffer of size `array.size() / 2` of type `T` is needed.
 
-Provide the `max` parameter in `settings` if there is a known upper bound on key values for radix and bucket sorts, this will speed up the code.
+Provide the `max` parameter in `settings` if there is a known upper bound on key values for radix and bucket sorts; this will speed up the code.
 
 See the performance section below.
 
@@ -108,7 +108,7 @@ Sorts the given array in-place using a recursive merge sort. This implementation
 Sorting algorithm options.
 
 * `#default` means no upper bound on key is assumed.
-* `#max v` means `v` is an upper bound (inclusive) for the value of all keys occuring in the input array.
+* `#max v` means `v` is an upper bound (inclusive) for the value of all keys occurring in the input array.
 
 **Note**: The maximum allowed input size (`self.size()`) is `2 ** 32 - 1` for all the algorithms.
 
