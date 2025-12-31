@@ -29,7 +29,7 @@ Memory use for scratch space and counting array is expected to be `3/2 * n`
 but, due to increase in discrete steps, can vary between `n` and `2*n` in practice.
 
 The user can specify the maximal occurring key value in the `settings` argument.
-By default the algorithm will assume that the entire Nat32 key space can occur.
+By default the algorithm will assume that the entire `Nat32` key space can occur.
 A lower maximal key value can speed up the algorithm and reduce memory because less key bits have to be processed.
 
 Since all bits are processed equally, the time complexity does not depend on the distribution of keys.
@@ -47,7 +47,7 @@ Memory use for scratch space and counting array is expected to be around `3/2 * 
 If recursion happens, for example because of non-uniform key input,
 then the memory use can increase depending on the bucket sizes.
 
-Bucket sort can be faster than radix sort because sorting small buckets is highly optimised with inlined code.
+Bucket sort can be faster than radix sort because sorting small buckets is highly optimized with inlined code.
 This is most noticeable on input with uniformly distributed keys.
 Hence, bucket sort is the recommended algorithm choice in the case of uniformly distributed keys.
 
@@ -163,7 +163,7 @@ Sorting algorithm options.
 
 ## Performance
 
-This library is heavily optimised for performance. The benchmarks in the `bench/` directory show that it significantly outperforms the core library's `Array.sort` for large arrays of integers. The `bucketSort` implementation includes specific optimizations for small buckets, using unrolled stack-based insertion-sort code to minimize recursion overhead.
+This library is heavily optimized for performance. The benchmarks in the `bench/` directory show that it significantly outperforms the core library's `Array.sort` for large arrays of integers. The `bucketSort` implementation includes specific optimizations for small buckets, using unrolled stack-based insertion-sort code to minimize recursion overhead.
 
 ### Instructions
 
